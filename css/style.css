@@ -1,0 +1,507 @@
+/********** Template CSS **********/
+:root {
+	--primary: #009cff;
+	--light: #f3f6f9;
+	--dark: #191c24;
+}
+
+.back-to-top {
+	position: fixed;
+	display: none;
+	right: 45px;
+	bottom: 45px;
+	z-index: 99;
+}
+
+/*** Spinner ***/
+#spinner {
+	opacity: 0;
+	visibility: hidden;
+	transition: opacity 0.5s ease-out, visibility 0s linear 0.5s;
+	z-index: 99999;
+}
+
+#spinner.show {
+	transition: opacity 0.5s ease-out, visibility 0s linear 0s;
+	visibility: visible;
+	opacity: 1;
+}
+
+/*** Button ***/
+.btn {
+	transition: 0.5s;
+}
+
+.btn.btn-primary {
+	color: #ffffff;
+}
+
+.btn-square {
+	width: 38px;
+	height: 38px;
+}
+
+.btn-sm-square {
+	width: 32px;
+	height: 32px;
+}
+
+.btn-lg-square {
+	width: 48px;
+	height: 48px;
+}
+
+.btn-square,
+.btn-sm-square,
+.btn-lg-square {
+	padding: 0;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	font-weight: normal;
+	border-radius: 50px;
+}
+
+/*** Layout ***/
+.sidebar {
+	position: fixed;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	width: 250px;
+	height: 100vh;
+	overflow-y: auto;
+	background: var(--light);
+	transition: 0.5s;
+	z-index: 999;
+}
+
+.content {
+	margin-left: 250px;
+	min-height: 100vh;
+	background: #ffffff;
+	transition: 0.5s;
+}
+
+@media (min-width: 992px) {
+	.sidebar {
+		margin-left: 0;
+	}
+
+	.sidebar.open {
+		margin-left: -250px;
+	}
+
+	.content {
+		width: calc(100% - 250px);
+	}
+
+	.content.open {
+		width: 100%;
+		margin-left: 0;
+	}
+}
+
+@media (max-width: 991.98px) {
+	.sidebar {
+		margin-left: -250px;
+	}
+
+	.sidebar.open {
+		margin-left: 0;
+	}
+
+	.content {
+		width: 100%;
+		margin-left: 0;
+	}
+}
+
+/*** Navbar ***/
+.sidebar .navbar .navbar-nav .nav-link {
+	padding: 7px 20px;
+	color: var(--dark);
+	font-weight: 500;
+	border-left: 3px solid var(--light);
+	border-radius: 0 30px 30px 0;
+	outline: none;
+}
+
+.sidebar .navbar .navbar-nav .nav-link:hover,
+.sidebar .navbar .navbar-nav .nav-link.active {
+	color: var(--primary);
+	background: #ffffff;
+	border-color: var(--primary);
+}
+
+/* .sidebar .navbar .navbar-nav .nav-link i {
+	width: 40px;
+	height: 40px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	background: #ffffff;
+	border-radius: 40px;
+} */
+
+.title-icon {
+	width: 20px;
+	height: 20px;
+}
+
+.title-icon > svg {
+	width: 16px;
+	height: 16px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	background: #ffffff;
+	border-radius: 40px;
+}
+
+/* .sidebar .navbar .navbar-nav .nav-link:hover i,
+.sidebar .navbar .navbar-nav .nav-link.active i {
+	background: var(--light);
+} */
+
+.title-icon > svg:hover,
+.title-icon > svg:active {
+	fill: var(--light);
+}
+
+.sidebar .navbar .dropdown-toggle::after {
+	position: absolute;
+	top: 15px;
+	right: 15px;
+	border: none;
+	content: "\f107";
+	font-family: "Font Awesome 5 Free";
+	font-weight: 900;
+	transition: 0.5s;
+}
+
+.sidebar .navbar .dropdown-toggle[aria-expanded="true"]::after {
+	transform: rotate(-180deg);
+}
+
+.sidebar .navbar .dropdown-item {
+	padding-left: 55px;
+	border-radius: 0 30px 30px 0;
+}
+
+.content .navbar .navbar-nav .nav-link {
+	margin-left: 25px;
+	padding: 12px 0;
+	color: var(--dark);
+	outline: none;
+}
+
+.content .navbar .navbar-nav .nav-link:hover,
+.content .navbar .navbar-nav .nav-link.active {
+	color: var(--primary);
+}
+
+.content .navbar .sidebar-toggler,
+.content .navbar .navbar-nav .nav-link i {
+	width: 40px;
+	height: 40px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	background: #ffffff;
+	border-radius: 40px;
+	text-decoration: none;
+}
+
+.content .navbar .dropdown-toggle::after {
+	margin-left: 6px;
+	vertical-align: middle;
+	border: none;
+	content: "\f107";
+	font-family: "Font Awesome 5 Free";
+	font-weight: 900;
+	transition: 0.5s;
+}
+
+.content .navbar .dropdown-toggle[aria-expanded="true"]::after {
+	transform: rotate(-180deg);
+}
+
+@media (max-width: 575.98px) {
+	.content .navbar .navbar-nav .nav-link {
+		margin-left: 15px;
+	}
+}
+
+/*** Date Picker ***/
+.bootstrap-datetimepicker-widget.bottom {
+	top: auto !important;
+}
+
+.bootstrap-datetimepicker-widget .table * {
+	border-bottom-width: 0px;
+}
+
+.bootstrap-datetimepicker-widget .table th {
+	font-weight: 500;
+}
+
+.bootstrap-datetimepicker-widget.dropdown-menu {
+	padding: 10px;
+	border-radius: 2px;
+}
+
+.bootstrap-datetimepicker-widget table td.active,
+.bootstrap-datetimepicker-widget table td.active:hover {
+	background: var(--primary);
+}
+
+.bootstrap-datetimepicker-widget table td.today::before {
+	border-bottom-color: var(--primary);
+}
+
+/*** Testimonial ***/
+.progress .progress-bar {
+	width: 0px;
+	transition: 2s;
+}
+
+/*** Testimonial ***/
+.testimonial-carousel .owl-dots {
+	margin-top: 24px;
+	display: flex;
+	align-items: flex-end;
+	justify-content: center;
+}
+
+.testimonial-carousel .owl-dot {
+	position: relative;
+	display: inline-block;
+	margin: 0 5px;
+	width: 15px;
+	height: 15px;
+	border: 5px solid var(--primary);
+	border-radius: 15px;
+	transition: 0.5s;
+}
+
+.testimonial-carousel .owl-dot.active {
+	background: var(--dark);
+	border-color: var(--primary);
+}
+
+/* Search Input */
+
+.input-fit {
+	width: 100%;
+}
+@media (min-width: 768px) {
+	.input-fit {
+		width: 280px;
+	}
+}
+
+/* Upload file Button */
+.upload-container {
+	width: 200px;
+	overflow: hidden;
+}
+
+.hidden-input {
+	display: none;
+}
+
+.upload-button {
+	display: inline-block;
+	padding: 10px 20px;
+	background-color: #007bff;
+	color: #fff;
+	cursor: pointer;
+	border-radius: 5px;
+	transition: background-color 0.3s ease;
+}
+
+.upload-button:hover {
+	background-color: #0056b3;
+}
+
+.selected-file {
+	margin-top: 10px;
+	font-weight: bold;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+td,
+th {
+	white-space: normal;
+	word-wrap: break-word;
+	min-width: 120px;
+}
+
+th:first-child,
+td:first-child {
+	min-width: 100px;
+}
+
+/* 三 */
+
+#manual-management th:first-child,
+#manual-managementd:first-child {
+	min-width: 220px;
+}
+
+#brand-management th:first-child,
+#brand-management td:first-child {
+	min-width: 220px;
+}
+
+#partsManagement th:nth-child(2),
+#partsManagement td:nth-child(2) {
+	min-width: 200px;
+}
+
+#partsOrder th:first-child,
+#partsOrder td:first-child {
+	min-width: 220px;
+}
+
+#stockIn th:first-child,
+#stockIn td:first-child {
+	min-width: 220px;
+}
+
+#insertContent th:first-child,
+#insertContent td:first-child {
+	min-width: 330px;
+}
+
+/* 二 */
+
+#storeInformation th:first-child,
+#storeInformation td:first-child {
+	min-width: 160px;
+}
+
+#depotList th:first-child,
+#depotList td:first-child {
+	min-width: 160px;
+}
+
+#stockOut th:first-child,
+#stockOut td:first-child {
+	min-width: 160px;
+}
+
+#orderIndex th:first-child,
+#orderIndex td:first-child {
+	min-width: 100px;
+}
+
+#Unsubscribe th:first-child,
+#Unsubscribe td:first-child {
+	min-width: 160px;
+}
+
+#partsCar th:first-child,
+#partsCar td:first-child {
+	min-width: 160px;
+}
+
+#orderIndex th:first-child,
+#orderIndex td:first-child {
+	min-width: 160px;
+}
+
+#accountList th:first-child,
+#accountList td:first-child {
+	min-width: 160px;
+}
+#inventory th:first-child,
+#inventory td:first-child {
+	min-width: 160px;
+}
+
+#roleList th:first-child,
+#roleList td:first-child {
+	min-width: 160px;
+}
+
+/* 一 */
+#partsManagement th:first-child,
+#partsManagement td:first-child {
+	min-width: 70px;
+}
+
+#orderDetail th:first-child,
+#orderDetail td:first-child {
+	min-width: 70px;
+}
+
+#searchParts th:first-child,
+#searchParts td:first-child {
+	min-width: 120px;
+}
+
+/* >三 */
+
+#orderDetail th:nth-child(2),
+#orderDetail td:nth-child(2) {
+	min-width: 320px;
+}
+
+.remove-link-decoration {
+	text-decoration: none !important;
+}
+
+.custom-file-input {
+	position: relative;
+	width: 100%;
+	height: 2.5rem;
+	margin: 0;
+	opacity: 0;
+	cursor: pointer;
+}
+
+#stockInPage_length {
+	position: absolute;
+}
+
+/* DataTable Pagination */
+div.table-responsive > div.dataTables_wrapper > div.row {
+	margin-top: 3vw;
+	margin-bottom: 3vw;
+}
+
+/* 入庫單：媒合清單內容對齊 */
+#stockInPage th {
+	text-align: center;
+}
+
+/* 盤點下載excel按鈕 */
+.btn-group-vertical > .btn,
+.btn-group > .btn {
+	margin-bottom: 10px;
+}
+
+#authorize-management-6 th:nth-child(3),
+#authorize-management-6 td:nth-child(3),
+#authorize-management-6 th:nth-child(4),
+#authorize-management-6 td:nth-child(4),
+#authorize-management-6 th:nth-child(5),
+#authorize-management-6 td:nth-child(5),
+#authorize-management-6 th:nth-child(6),
+#authorize-management-6 td:nth-child(6),
+#authorize-management-6 th:nth-child(9),
+#authorize-management-6 td:nth-child(9) {
+	min-width: 60px;
+}
+#authorize-management-6 th:nth-child(2),
+#authorize-management-6 td:nth-child(2),
+#authorize-management-6 th:nth-child(7),
+#authorize-management-6 td:nth-child(7),
+#authorize-management-6 th:nth-child(12),
+#authorize-management-6 td:nth-child(12) {
+	min-width: 70px;
+}

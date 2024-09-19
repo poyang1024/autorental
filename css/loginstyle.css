@@ -1,0 +1,78 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #fff;
+    
+}
+.logincontainer {
+    width: 350px;
+    padding: 20px;
+    background-color: #f0f0f0;
+    border-radius: 8px;  /* Rounded corners for the container */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);  /* Subtle shadow */
+    text-align: center;  /* Center text for titles */
+}
+.title-logincontainer {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px; /* Space below the title */
+}
+.title-logincontainer h2 {
+    margin: 0;
+    font-size: 24px;  /* Larger font size */
+    color: #333; /* Dark grey color for text */
+}
+.form-group {
+    margin-bottom: 15px;
+}
+.form-group label {
+    display: block;
+    text-align: left;  /* Align text to the left */
+    margin-bottom: 5px;
+    color: #666; /* Medium grey color for labels */
+}
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 20px;  /* Large rounded corners for inputs */
+    box-sizing: border-box;  /* Include padding in width */
+}
+.form-group button {
+    width: 100%;
+    padding: 10px;
+    background-color: #0081a7;  /* Blue color for the button */
+    color: white;
+    border: none;
+    border-radius: 20px;  /* Large rounded corners for button */
+    cursor: pointer;
+    font-size: 16px;  /* Larger font size for button text */
+    margin-top: 10px; /* Space above the button */
+}
+.dashboard-link {
+    color: #0081a7;  /* Blue color to match the button */
+    text-decoration: none;
+    font-weight: bold; /* Make hash symbol bold */
+}
+
+.dashboard-link:hover {
+    color: #00afb9;
+}
+
+button{
+    color: #0081a7;
+}
+
+.form-group button:hover{
+    background-color: #00afb9;
+}
+#checkEye {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+  }

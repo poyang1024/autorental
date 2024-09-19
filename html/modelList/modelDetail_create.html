@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>電動車管理 / 新增資料 </title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <!-- Favicon -->
+    <link href="../../img/favicon.ico" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="../../css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../css/toastr.min.css">
+
+    <!-- Template Stylesheet -->
+    <link href="../../css/style.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container-fluid position-relative bg-white d-flex p-0">
+        <!-- Spinner Start -->
+        <div id="spinner"
+            class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+        <!-- Spinner End -->
+
+
+        <!-- Sidebar Start -->
+        <div class="sidebar pe-4 pb-3">
+            <nav class="navbar bg-light navbar-light">
+                <a href="../index.html" class="navbar-brand mx-4 mb-3">
+                    <h3 class="text-primary">電動車後台管理</h3>
+                </a>
+                <div class="navbar-nav w-100" id="dynamicMenu">
+                </div>
+            </nav>
+        </div>
+        <!-- Sidebar End -->
+
+
+        <!-- Content Start -->
+        <div class="content">
+            <!-- Navbar Start -->
+            <nav class="navbar navbar-expand bg-light navbar-light sticky-top px-4 py-0">
+                <a href="../index.html" class="navbar-brand d-flex d-lg-none me-4">
+                    <h2 class="text-primary mb-0"><i class="fa fa-hashtag"></i></h2>
+                </a>
+                <a href="#" class="sidebar-toggler flex-shrink-0">
+                    <i class="fa fa-bars"></i>
+                </a>
+
+                <div class="navbar-nav align-items-center ms-auto">
+
+                    <div class="nav-item">
+                        <a href="notificationList.html" class="nav-link position-relative">
+                            <i class="fa fa-bell me-lg-2"></i>
+                            <span
+                                class="position-absolute top-30 start-60 translate-middle badge rounded-pill bg-danger"
+                                id="unreadMsgNum">
+                                <span class="visually-hidden">unread messages</span>
+                            </span>
+                        </a>
+                    </div>
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                            <img class="userImg rounded-circle me-lg-2" src="../../img/user.jpg" alt=""
+                                style="width: 40px; height: 40px;">
+                            <span class="d-none d-lg-inline-flex" id="userName">John Doe</span>
+                        </a>
+                        <div
+                            class="dropdown-menu dropdown-menu-end bg-body-secondary border-0 rounded-0 rounded-bottom m-0">
+                            <a href="#" class="dropdown-item" id="logout">Log Out</a>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+            <!-- Navbar End -->
+
+
+            <!-- Blank Start -->
+            <div class="container-fluid pt-4 px-4">
+                <div class="row  bg-light rounded p-3 mx-0">
+
+                    <h3>站點資料</h3>
+
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="modelList.html">費率管理</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">電動車管理 / 新增資料</li>
+                        </ol>
+                    </nav>
+
+
+                    <div class="block-first mt-5">
+
+                        <form id="uploadForm" class="needs-validation" novalidate>
+                            <h4>車型照片</h4>
+                            <div id="modelPhotoContainer" class="row g-3" style="display: none;">
+                                <div class="col-sm-6">
+                                    <div class="card" style="max-width: 300px; margin: auto;">
+                                        <img id="modelPhoto" class="card-img-top" alt="車型照片" style="max-width: 100%; height: auto;">
+                                        <!-- <div class="card-body">
+                                            <p class="card-text">站點照片</p>
+                                        </div> -->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- New file upload input -->
+                            <div class="row g-3 mt-3">
+                                <div class="col-sm-6">
+                                    <label for="modelPhotoUpload" class="form-label">上傳車型照片</label>
+                                    <input type="file" class="form-control" id="modelPhotoUpload" name="modelPhotoUpload" accept=".jpg,.jpeg,.png,.gif">
+                                    <small class="form-text text-muted">允許的檔案類型：JPG, JPEG, PNG, GIF</small>
+                                </div>
+                            </div>
+                            <hr class="my-4">
+
+                            <h4>基本資料</h4>
+                            <div class="row g-3">
+                                <div class="col-sm-6">
+                                    <label for="M-brand_name" class="form-label">*品牌</label>
+                                    <select id="M-brand_name" class="form-select" name="brand_name" required></select>
+                                    </select>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <label for="M-modelname" class="form-label">*車型名稱</label>
+                                    <input type="text" class="form-control" id="M-modelname" name="modelname" required>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <label for="M-levelId" class="form-label">*駕照等級</label>
+                                    <select class="form-select" id="M-levelId" name="levelId" required>
+                                        <option value="0">請選擇</option>
+                                        <option value="1">普通輕型機車</option>
+                                        <option value="2">普通重型機車</option>
+                                        <option value="3">大型三輪機車</option>
+                                        <option value="4">大型速克達機車</option>
+                                        <option value="5">大型重型機車</option>
+                                    </select>
+                                </div>
+
+                                <hr class="my-6">
+                                <h4>車輛數據</h4>
+                                
+                                <!-- <div class="col-sm-6">
+                                    <label for="M-LengthxWidthxHeight" class="form-label">長x寬x高</label>
+                                    <input type="text" class="form-control" id="R-LengthxWidthxHeight" name="LengthxWidthxHeight" disabled>
+                                </div> -->
+
+                                <div class="col-sm-6">
+                                    <label for="M-length" class="form-label">*長</label>
+                                    <input type="text" class="form-control" id="M-length" name="length" required>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <label for="M-width" class="form-label">*寬</label>
+                                    <input type="text" class="form-control" id="M-width" name="width" required>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <label for="M-height" class="form-label">*高</label>
+                                    <input type="text" class="form-control" id="M-height" name="height" required>
+                                </div>
+
+                                <hr class="my-6">
+
+                                <div class="col-sm-6">
+                                    <label for="M-wheelBase" class="form-label">軸距</label>
+                                    <input type="text" class="form-control" id="M-wheelBase" name="wheelBase">
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <label for="M-seatHeight" class="form-label">座墊高</label>
+                                    <input type="text" class="form-control" id="M-seatHeight" name="seatHeight">
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <label for="M-weight" class="form-label">全車重量（含電池）</label>
+                                    <input type="text" class="form-control" id="M-weight" name="weight">
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <label for="M-horsepower" class="form-label">*最大功率（馬力）</label>
+                                    <input type="text" class="form-control" id="M-horsepower" name="horsepower" required>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <label for="M-torque" class="form-label">*最大扭力</label>
+                                    <input type="text" class="form-control" id="M-torque" name="torque" required>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <label for="M-transmissionType" class="form-label">傳動形式</label>
+                                    <input type="text" class="form-control" id="M-transmissionType" name="transmissionType">
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <label for="M-powerMode" class="form-label">動力模式</label>
+                                    <input type="text" class="form-control" id="M-powerMode" name="powerMode">
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <label for="M-backShockAbsorberSpec" class="form-label">後避震器</label>
+                                    <input type="text" class="form-control" id="M-backShockAbsorberSpec" name="backShockAbsorberSpec">
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <label for="M-frontTireSpec" class="form-label">前 輪胎規格</label>
+                                    <input type="text" class="form-control" id="M-frontTireSpec" name="frontTireSpec">
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <label for="M-backTireSpec" class="form-label">後 輪胎規格</label>
+                                    <input type="text" class="form-control" id="M-backTireSpec" name="backTireSpec">
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <label for="M-frontDiscSpec" class="form-label">前碟盤</label>
+                                    <input type="text" class="form-control" id="M-frontDiscSpec" name="frontDiscSpec">
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <label for="M-backDiscSpec" class="form-label">後碟盤</label>
+                                    <input type="text" class="form-control" id="M-backDiscSpec" name="backDiscSpec">
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <label for="M-backGloveBoxSpace" class="form-label">後製物箱</label>
+                                    <input type="text" class="form-control" id="M-backGloveBoxSpace" name="backGloveBoxSpace">
+                                </div>
+
+                            </div>
+
+                            <hr class="my-4">
+                            <h4>進階資料</h4>
+                            <div class="row g-3 mb-5">
+                                <div class="col-sm-6">
+                                    <label for="M-status" class="form-label">狀態</label>
+                                    <select class="form-select" id="M-status" name="status">
+                                        <option value="1">正常</option>
+                                        <option value="2">停用</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <label for="M-modelOrder" class="form-label">排序</label>
+                                    <input type="text" class="form-control" id="M-modelOrder" name="modelOrder">
+                                </div>
+                            </div>
+
+                            <hr class="my-4">
+                            <h4>系統資料</h4>
+                            <div class="row g-3 mb-5">
+                                <div class="col-sm-4">
+                                    <label for="BuildTime" class="form-label">建立時間</label>
+                                    <input type="text" class="form-control" id="BuildTime" disabled>
+                                </div>
+
+                                <div class="col-sm-4">
+                                    <label for="EditTime" class="form-label">修改時間</label>
+                                    <input type="text" class="form-control" id="EditTime" disabled>
+                                </div>
+
+                                <div class="col-sm-4">
+                                    <label for="EditAccount" class="form-label">修改帳號</label>
+                                    <input type="text" class="form-control" id="EditAccount" disabled>
+                                </div>
+                                <div class="text-center w-100 pt-3">
+                                    <button id="saveButton" class="w-25 btn btn-primary btn-md"
+                                        type="submit">儲存</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+            <!-- Blank End -->
+
+
+            <!-- Footer Start -->
+            <!-- Footer End -->
+        </div>
+        <!-- Content End -->
+
+
+        <!-- Back to Top -->
+        <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+    </div>
+
+    <!--  Boostrap JavaScript Libraries -->
+    <script src="../../js/jquery-3.7.1.min.js"></script>
+    <script src="../../js/bootstrap.bundle.min.js"></script>
+    <script src="../../js/Login/Authlogin.js"></script>
+    <script src="../../js/Notifications/notifications.js"></script>
+    <script src="../../js/Notifications/api-notifications.js"></script>
+    <script src="../../js/crypto-js.js"></script>
+    <script src="../../js/toastr.min.js"></script>
+    <script src="../../js/Notifications/notifications.js"></script>
+    <script src="../../js/Notifications/toastr-options.js"></script>
+
+
+    <!-- Template Javascript -->
+    <script src="../../config/api-config.js"></script>
+    <script src="../../js/main.js"></script>
+
+    <script src="../../js/Public/create_showInfo.js"></script>
+    <script src="../../js/Public/menu.js"></script>
+
+    <!-- 權限 -->
+    <script src="../../js/Public/permissionControl.js"></script>
+    <script src="../../js/Public/Auth_Create.js"></script>
+    <script src="../../js/Model/ModelList_create.js"></script>
+</body>
+
+</html>
