@@ -236,14 +236,14 @@ function setupUpdateSite(siteId) {
                     xhr.upload.addEventListener("progress", function(evt) {
                         if (evt.lengthComputable) {
                             var percentComplete = evt.loaded / evt.total;
-                            toastr.info('上傳進度：', percentComplete * 100 + '%');
+                            // toastr.info('上傳進度：', percentComplete * 100 + '%');
                         }
                     }, false);
                     return xhr;
                 }
             });
 
-            if (response.returnCode === "1") {
+            if (response.returnCode === "001") {
                 showSuccessFileNotification();
 
                 setTimeout(() => {

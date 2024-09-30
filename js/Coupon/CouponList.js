@@ -202,8 +202,8 @@ function getFilterData() {
     // 日期
     var lastRentalTime = convertDateFormat($("#lastRentalTime").val());
     if (lastRentalTime.start && lastRentalTime.end) {
-        filterData.lastRentalSTime = lastRentalTime.start;
-        filterData.lastRentalETime = lastRentalTime.end;
+        filterData.lastOrderSTime = lastRentalTime.start;
+        filterData.lastOrderETime = lastRentalTime.end;
     }
 
     var birthday = convertDateFormat($("#birthday").val());

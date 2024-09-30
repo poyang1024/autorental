@@ -24,7 +24,7 @@ function handlePageUpdatePermissions(currentUser, currentUrl) {
 				(currentUrl.includes("carDetail") && page.name === "車籍定義資料")
 			) {
 				currentPageAuth = page.auth;
-				console.log(page);
+				// console.log(page);
 				if (!currentPageAuth.includes("update")) {
 					document.body.style.display = "none";
 					window.history.back();

@@ -24,7 +24,7 @@ function handlePageReadPermissions(currentUser, currentUrl) {
 				(currentUrl.includes("orderDetail") && page.name === "訂單資料")
 			) {
 				currentPageAuth = page.auth;
-				console.log(page);
+				// console.log(page);
 				if (!currentPageAuth.includes("read")) {
 					document.body.style.display = "none";
 					window.history.back();

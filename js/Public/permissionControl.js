@@ -1,17 +1,16 @@
 $(document).ready(function () {
 	var currentUser = JSON.parse(localStorage.getItem("currentUser"))
-	console.log("currentUser:", JSON.stringify(currentUser.userretrunData, null, 2));
 
 	function handlePermissionControl() {
 		if (currentUser.userretrunData) {
 			for (var i = 0; i < currentUser.userretrunData.length; i++) {
 				var page = currentUser.userretrunData[i];
 				var menuOrderValue = parseInt(page.menuOrder);
-				console.log(`Checking page ${i}:`, {
-					menuOrder: menuOrderValue,
-					mainCategoryId: page.mainCategoryId,
-					auth: page.auth
-				});
+				// console.log(`Checking page ${i}:`, {
+				// 	menuOrder: menuOrderValue,
+				// 	mainCategoryId: page.mainCategoryId,
+				// 	auth: page.auth
+				// });
 				
 				if (
 					menuOrderValue >= 1 &&

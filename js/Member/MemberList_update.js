@@ -110,7 +110,7 @@ function populateMemberDetails(memberData) {
         
         // Show relevant fields based on invoice type and set them as required
         switch(invoiceType) {
-            case "0": // 愛心捐贈
+            case "3": // 愛心捐贈
                 $("#Mem-donationUnit").closest('.col-sm-6').show();
                 $("#Mem-donationUnit").prop('required', true);
                 break;

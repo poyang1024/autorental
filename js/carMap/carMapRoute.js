@@ -21,7 +21,11 @@ async function initMap() {
     directionsService = new DirectionsService();
     directionsRenderer = new DirectionsRenderer({
         map: map,
-        suppressMarkers: true // 我們將自定義起點和終點標記
+        suppressMarkers: true, // 我們將自定義起點和終點標記
+        polylineOptions: {
+            strokeColor: '#4285F4', // 設置路線顏色為藍色
+            strokeWeight: 5 // 設置路線寬度
+        }
     });
 
     // 加載測試數據並繪製路線
@@ -61,6 +65,7 @@ async function loadDataAndDrawRoute() {
 
             // 繪製路線
             drawDrivingRouteOnMap(convertedRouteData);
+            // drawDrivingRouteOnMap(testRouteData); // 測試數據
         } else {
             handleApiResponse(responseData);
         }
@@ -109,48 +114,30 @@ async function drawDrivingRouteOnMap(routeData) {
     const destination = routeData[routeData.length - 1];
 
     // 分割路線點
-    const routeGroups = splitRouteData(routeData.slice(1, -1));
+    const waypoints = routeData.slice(1, -1).map(point => ({
+        location: new google.maps.LatLng(point.lat, point.lng),
+        stopover: true
+    }));
+
+    const request = {
+        origin: new google.maps.LatLng(origin.lat, origin.lng),
+        destination: new google.maps.LatLng(destination.lat, destination.lng),
+        waypoints: waypoints,
+        travelMode: google.maps.TravelMode.DRIVING
+    };
 
     try {
-        let fullPath = [];
-        for (let i = 0; i < routeGroups.length; i++) {
-            const start = i === 0 ? origin : routeGroups[i-1][routeGroups[i-1].length - 1];
-            const end = i === routeGroups.length - 1 ? destination : routeGroups[i][routeGroups[i].length - 1];
-            
-            const waypoints = routeGroups[i].map(point => ({
-                location: new google.maps.LatLng(point.lat, point.lng),
-                stopover: true
-            }));
-
-            const request = {
-                origin: new google.maps.LatLng(start.lat, start.lng),
-                destination: new google.maps.LatLng(end.lat, end.lng),
-                waypoints: waypoints,
-                travelMode: google.maps.TravelMode.DRIVING
-            };
-
-            const result = await new Promise((resolve, reject) => {
-                directionsService.route(request, (result, status) => {
-                    if (status === google.maps.DirectionsStatus.OK) {
-                        resolve(result);
-                    } else {
-                        reject(status);
-                    }
-                });
+        const result = await new Promise((resolve, reject) => {
+            directionsService.route(request, (result, status) => {
+                if (status === google.maps.DirectionsStatus.OK) {
+                    resolve(result);
+                } else {
+                    reject(status);
+                }
             });
+        });
 
-            fullPath = fullPath.concat(result.routes[0].overview_path);
-        }
-
-        // 使用完整路徑創建新的 DirectionsResult 對象
-        const fullResult = {
-            routes: [{
-                overview_path: fullPath,
-                legs: [{ steps: [] }]
-            }]
-        };
-
-        directionsRenderer.setDirections(fullResult);
+        directionsRenderer.setDirections(result);
 
         // 添加起點和終點標記
         addMarker(origin, '起點', 'green');
@@ -158,13 +145,12 @@ async function drawDrivingRouteOnMap(routeData) {
 
         // 添加途經點標記
         routeData.slice(1, -1).forEach((point, index) => {
-            // addMarker(point, `途經點 ${index + 1}`, 'blue');
-            addMarker(point, '', 'blue');
+            addMarker(point, `停靠點 ${index + 1}`, 'blue');
         });
 
         // 調整地圖視圖以顯示整個路線
         const bounds = new google.maps.LatLngBounds();
-        fullPath.forEach(point => bounds.extend(point));
+        result.routes[0].overview_path.forEach(point => bounds.extend(point));
         map.fitBounds(bounds);
     } catch (error) {
         console.error("Directions request failed due to " + error);
@@ -220,4 +206,5 @@ document.getElementById("viewMapButton").addEventListener("click", function() {
 // 當 DOM 加載完成後初始化地圖
 document.addEventListener('DOMContentLoaded', function() {
     // 不要在這裡直接調用 initMap，而是等待按鈕點擊
+    initMap();
 });

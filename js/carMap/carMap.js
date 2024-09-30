@@ -560,7 +560,7 @@ function showVehicleDetailsModal(carinformation) {
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-            <p>IMEO 車機編號 : ${carinformation.IMEI}</p>
+            <p>IMEI 車機編號 : ${carinformation.IMEI}</p>
             <p>ICCID SIM CARD : ${carinformation.ICCID}</p>
             <p>經緯度: ${carinformation.coordinateX} ${carinformation.coordinateY}</p>
             <p>機車小電電壓 (V) : ${carinformation.carVoltage}</p>

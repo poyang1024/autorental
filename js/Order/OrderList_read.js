@@ -31,8 +31,8 @@ $(document).ready(function () {
             { data: "remark" },
             { data: "payTypeName" },
             { data: "TappayRecTradeId" },
-            { data: "status" },
-            { data: "updateOperatorId" },
+            { data: "statusName" },
+            { data: "updateOperatorName" },
             { data: "updateTime" },
         ],
         drawCallback: function () {
@@ -49,7 +49,7 @@ $(document).ready(function () {
             { data: "invoiceNo" },
             { data: "createTime" },
             { data: "invoiceValue" },
-            { data: "status" },
+            { data: "statusName" },
             { data: "updateTime" }
         ],
         drawCallback: function () {

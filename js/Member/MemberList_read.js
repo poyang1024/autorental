@@ -80,7 +80,7 @@ $(document).ready(function () {
 
         // Show relevant fields based on invoice type
         switch(invoiceType) {
-            case "0": // 愛心捐贈
+            case "3": // 愛心捐贈
                 $("#Mem-donationUnit").closest('.col-sm-6').show();
                 break;
             case "1": // 個人電子發票（無統編）
