@@ -71,7 +71,7 @@
 
                 <div class="navbar-nav align-items-center ms-auto">
 
-                    <div class="nav-item">
+                    <!-- <div class="nav-item">
                         <a href="../notificationList.html" class="nav-link position-relative">
                             <i class="fa fa-bell me-lg-2"></i>
                             <span
@@ -80,7 +80,7 @@
                                 <span class="visually-hidden">unread messages</span>
                             </span>
                         </a>
-                    </div>
+                    </div> -->
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                             <img class="userImg rounded-circle me-lg-2" src="../../img/user.jpg" alt=""
@@ -198,29 +198,37 @@
 
                         </div>
 
-                        <div class="row mb-5">
-
-                            <div class="col-sm-4">
-                                <label for="couponName" class="form-label">發送優惠券名稱</label>
-                                <input type="text" class="form-control" id="couponName" name="couponName">
+                        <form id="uploadForm" class="needs-validation" novalidate>
+                            <div class="row mb-5">
+                                <div class="col-sm-4">
+                                    <label for="couponName" class="form-label">*發送優惠券名稱</label>
+                                    <input type="text" class="form-control" id="couponName" name="couponName" required>
+                                    <div class="invalid-feedback">
+                                        請輸入優惠券名稱
+                                    </div>
+                                </div>
+                        
+                                <div class="col-sm-4">
+                                    <label for="couponValue" class="form-label">*發送優惠券面額</label>
+                                    <input type="number" class="form-control" id="couponValue" name="couponValue" required min="1">
+                                    <div class="invalid-feedback">
+                                        請輸入優惠券面額
+                                    </div>
+                                </div>
+                        
+                                <div class="col-sm-4">
+                                    <label for="deadline" class="form-label">*使用截止日期</label>
+                                    <input type="date" class="form-control" id="deadline" name="deadline" required>
+                                    <div class="invalid-feedback">
+                                        請選擇截止日期
+                                    </div>
+                                </div>
+                        
+                                <div class="text-center w-100 pt-3">
+                                    <button id="saveButton" class="w-25 btn btn-primary btn-md" type="submit">發送選擇對象</button>
+                                </div>
                             </div>
-
-                            <div class="col-sm-4">
-                                <label for="couponValue" class="form-label">發送優惠券面額</label>
-                                <input type="text" class="form-control" id="couponValue" name="couponValue">
-                            </div>
-
-                            <div class="col-sm-4">
-                                <label for="deadline" class="form-label">使用截止日期</label>
-                                <input type="date" class="form-control" id="deadline" name="deadline">
-                            </div>
-
-                            <div class="text-center w-100 pt-3">
-                                <button id="saveButton" class="w-25 btn btn-primary btn-md"
-                                    type="submit">發送選擇對象</button>
-                            </div>
-
-                        </div>
+                        </form>
 
                     </div>
                 </div>

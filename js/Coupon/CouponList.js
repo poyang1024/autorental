@@ -9,12 +9,17 @@ $(document).ready(function () {
    // 初始數據加載，傳入預設的租車時間範圍
    fetchCouponList(defaultDateRange);
 
-    $("#saveButton").on("click", function() {
+   var uploadForm = document.getElementById("uploadForm");
+    uploadForm.addEventListener("submit", function (event) {
+        event.preventDefault();
         if (checkedRows.size === 0) {
-            showWarningNotification("請選擇至少一位用戶來發送優惠券");
-            return;
+            showWarningcouponNotification();
+        } else if (!uploadForm.checkValidity()) {
+            event.stopPropagation();
+            uploadForm.classList.add('was-validated');
+        } else {
+            insertCouponDetail();
         }
-        insertCouponDetail();
     });
 });
 
@@ -325,6 +330,8 @@ function insertCouponDetail() {
 
     // 獲取被選中的用戶 ID
     const selectedUserIds = Array.from(checkedRows);
+    const action = "insertCouponDetail";
+    const source = "HBEVBACKEND";
 
     // 準備 API 請求數據
     const requestData = {
@@ -345,7 +352,9 @@ function insertCouponDetail() {
             hideSpinner(); // 隱藏 loading spinner
             if (responseData.returnCode === "1") {
                 showSuccessFileNotification();
+                console.log("AJAX response data:", responseData);
                 // 可能需要重新加載數據或更新界面
+                window.location.reload();
                 fetchCouponList();
             } else {
                 handleApiResponse(responseData);

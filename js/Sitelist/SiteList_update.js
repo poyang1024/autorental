@@ -237,13 +237,16 @@ function setupUpdateSite(siteId) {
                         if (evt.lengthComputable) {
                             var percentComplete = evt.loaded / evt.total;
                             // toastr.info('上傳進度：', percentComplete * 100 + '%');
+                            console.log('上傳進度：', percentComplete * 100 + '%');
                         }
                     }, false);
                     return xhr;
                 }
             });
+            console.log(response.returnCode);
+            console.log(response);
 
-            if (response.returnCode === "001") {
+            if (response.returnCode === "1") {
                 showSuccessFileNotification();
 
                 setTimeout(() => {

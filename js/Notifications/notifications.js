@@ -59,6 +59,10 @@ function showWarningfillFormNotification() {
 	toastr.warning("請確定填寫完整！", "提醒");
 }
 
+function showWarningcouponNotification() {
+	toastr.warning("請至少選擇一個發送對象！", "提醒");
+}
+
 //購物車
 function showSuccessAddToCarNotification() {
 	toastr.success("請至購物車查看添加內容！", "加入成功");
