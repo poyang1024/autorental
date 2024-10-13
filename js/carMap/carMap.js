@@ -469,7 +469,24 @@ function fitMapToMarkers() {
 
     const bounds = new google.maps.LatLngBounds();
     markers.forEach(marker => bounds.extend(marker.position));
+
     map.fitBounds(bounds);
+
+    // 設置最小縮放級別
+    const minZoomLevel = 17; // 你可以根據需要調整這個值
+    const listener = google.maps.event.addListener(map, "idle", function() {
+        if (map.getZoom() > minZoomLevel) {
+            map.setZoom(minZoomLevel);
+        }
+        google.maps.event.removeListener(listener);
+    });
+
+    // 如果只有一個標記，手動設置縮放級別
+    if (markers.length === 1) {
+        const center = markers[0].position;
+        map.setCenter(center);
+        map.setZoom(minZoomLevel);
+    }
 }
 
 // 顯示車輛信息
@@ -570,10 +587,10 @@ function showVehicleDetailsModal(carinformation) {
             <p>機車車速 SPEED(k/ph) : ${carinformation.carSpeed}</p>
             <p>機車累積里程 : ${carinformation.carTotalMileage}</p>
             <p>機車剩餘行駛里程 : ${carinformation.carRemainingMileage}</p>
-            <p>機車狀態 : ${getCarStatusText(carinformation.carStatus)}</p>
-            <p>機車車架起閉狀態 : ${getCarBracketStatusText(carinformation.carBracketStatus)}</p>
-            <p>機車之坐墊起閉狀態 : ${getCarSeatStatusText(carinformation.carSeatStatus)}</p>
-            <p>機車故障警告燈狀態 : ${getCarWarnLightStatusText(carinformation.carWarnLightStatus)}</p>
+            <p>機車狀態 : ${carinformation.carStatusName}</p>
+            <p>機車車架起閉狀態 : ${carinformation.carBracketStatusName}</p>
+            <p>機車之坐墊起閉狀態 : ${carinformation.carSeatStatusName}</p>
+            <p>機車故障警告燈狀態 : ${carinformation.carWarnLightStatusName}</p>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
@@ -587,44 +604,6 @@ function showVehicleDetailsModal(carinformation) {
     $('#vehicleDetailsModal .btn-close, #vehicleDetailsModal .btn-secondary').on('click', function() {
         $('#vehicleDetailsModal').modal('hide');
     });
-}
-
-function getCarStatusText(status) {
-    switch(status) {
-        case '1': return 'OFF';
-        case '2': return 'ACC';
-        case '3': return 'IG';
-        case '4': return 'ACC+IG';
-        case '5': return 'RIDE';
-        case '6': return '緊急中斷';
-        default: return '未知';
-    }
-}
-
-function getCarBracketStatusText(status) {
-    switch(status) {
-        case '0': return '下側腳架';
-        case '1': return '收側腳架';
-        default: return '未知';
-    }
-}
-
-function getCarSeatStatusText(status) {
-    switch(status) {
-        case '0': return '坐墊關閉';
-        case '1': return '坐墊開啟';
-        default: return '未知';
-    }
-}
-
-function getCarWarnLightStatusText(status) {
-    switch(status) {
-        case '0': return 'OFF';
-        case '1': return 'Amber';
-        case '2': return 'Red';
-        case '3': return 'T.B.D';
-        default: return '未知';
-    }
 }
 
 // 處理搜索
@@ -661,7 +640,6 @@ async function showBumpRecord(carinfo) {
     const source = "HBEVBACKEND";
     const chsmtoGetManualList = action + source + "HBEVCarBApi";
     const chsm = CryptoJS.MD5(chsmtoGetManualList).toString().toLowerCase();
-    console.log("showBumpRecord's" + carinfo);
 
     try {
         const response = await $.ajax({
@@ -678,7 +656,7 @@ async function showBumpRecord(carinfo) {
 
         if (response && response.returnCode === "1") {
             console.log(response.returnData);
-            displayBumpRecord(response.returnData[0]);
+            displayBumpRecord(response.returnData);
         } else {
             handleApiResponse(response);
         }
@@ -710,17 +688,19 @@ function displayBumpRecord(bumpData) {
 
     if ($.fn.DataTable) {
         $('#bumpRecordTable').DataTable({
-            data: Array.isArray(bumpData) ? bumpData : [bumpData],
+            // data: Array.isArray(bumpData) ? bumpData : [bumpData],
+            data : bumpData,
             columns: [
                 { data: null, render: function(data, type, row) {
                     return `${row.coordinateX || 'N/A'} ${row.coordinateY || 'N/A'}`;
                 }},
-                { data: 'carStatus', render: function(data, type, row) {
-                    return getCarStatusText(data) || 'N/A';
-                }},
+                // { data: 'carStatusName', render: function(data, type, row) {
+                //     return getCarStatusText(data) || 'N/A';
+                // }},
+                { data: 'carStatusName' },
                 { data: 'carSpeed' },
                 { data: 'carBigBatterySOC' },
-                { data: 'messageId' },
+                { data: 'messageName' },
                 { data: 'RTCTime' }
             ],
             language: {
@@ -770,6 +750,20 @@ function displayBumpRecord(bumpData) {
     });
 }
 
+function getCarStatusText(status) {
+    switch(status) {
+        case '0': return 'OFF';
+        case '1': return 'BG CG ACC (Low Line)';
+        case '2': return 'SB CG IG (Low Line)';
+        case '3': return 'IG (防暴衝模式)';
+        case '4': return 'RIDE (騎乘模式)';
+        case '5': return 'Emergency Shut Down';
+        case '6': return 'T.B.D';
+        case '7': return 'Invalid';
+        default: return '未知';
+    }
+}
+
 
 function getCurrentDateTime() {
     const now = new Date();
@@ -805,5 +799,31 @@ function createMarkerContent(vehicle) {
 //         case 'RIDE': return 'red';
 //         case '緊急中斷': return 'purple';
 //         default: return 'black';
+//     }
+// }
+
+// function getCarBracketStatusText(status) {
+//     switch(status) {
+//         case '0': return '下側腳架';
+//         case '1': return '收側腳架';
+//         default: return '未知';
+//     }
+// }
+
+// function getCarSeatStatusText(status) {
+//     switch(status) {
+//         case '0': return '坐墊關閉';
+//         case '1': return '坐墊開啟';
+//         default: return '未知';
+//     }
+// }
+
+// function getCarWarnLightStatusText(status) {
+//     switch(status) {
+//         case '0': return 'OFF';
+//         case '1': return 'Amber';
+//         case '2': return 'Red';
+//         case '3': return 'T.B.D';
+//         default: return '未知';
 //     }
 // }

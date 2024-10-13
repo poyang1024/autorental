@@ -1,87 +1,10 @@
+
 // 全局變量
 let map;
 let directionsService;
 let directionsRenderer;
-let markers = []; // 用於存儲所有的標記
-
-// 初始化函數
-async function initMap() {
-    // 加載必要的庫
-    const { Map } = await google.maps.importLibrary("maps");
-    const { DirectionsService, DirectionsRenderer } = await google.maps.importLibrary("routes");
-
-    // 創建地圖
-    map = new Map(document.getElementById('map'), {
-        center: { lat: 25.033964, lng: 121.564468 }, // 台北市中心
-        mapId: "5588836", // 使用預設的地圖 ID
-        zoom: 12
-    });
-
-    // 初始化 DirectionsService 和 DirectionsRenderer
-    directionsService = new DirectionsService();
-    directionsRenderer = new DirectionsRenderer({
-        map: map,
-        suppressMarkers: true, // 我們將自定義起點和終點標記
-        polylineOptions: {
-            strokeColor: '#4285F4', // 設置路線顏色為藍色
-            strokeWeight: 5 // 設置路線寬度
-        }
-    });
-
-    // 加載測試數據並繪製路線
-    loadDataAndDrawRoute();
-}
-
-// 加載測試數據並繪製路線
-async function loadDataAndDrawRoute() {
-    const jsonStringFromLocalStorage = localStorage.getItem("userData");
-    const getUserData = JSON.parse(jsonStringFromLocalStorage);
-    const user_token = getUserData.token;
-
-    var action = "getCarRoute";
-    var source = "HBEVBACKEND";
-    var chsmtoGetManualList = action + source + "HBEVCarBApi";
-    var chsm = CryptoJS.MD5(chsmtoGetManualList).toString().toLowerCase();
-
-    var orderNo = sessionStorage.getItem("orderNo");
-    const orderNoId = JSON.stringify({orderNo: orderNo});
-
-    try {
-        const responseData = await $.ajax({
-            type: "POST",
-            url: `${apiURL}/car`,
-            headers: { Authorization: "Bearer " + user_token },
-            data: {
-                action: action,
-                source: source,
-                chsm: chsm,
-                data: orderNoId
-            }
-        });
-
-        if (responseData.returnCode === "1") {
-            console.log("Route data:", responseData.returnData);
-            const convertedRouteData = convertRouteData(responseData.returnData);
-
-            // 繪製路線
-            drawDrivingRouteOnMap(convertedRouteData);
-            // drawDrivingRouteOnMap(testRouteData); // 測試數據
-        } else {
-            handleApiResponse(responseData);
-        }
-    } catch (error) {
-        console.error("Error fetching car list:", error);
-        showErrorNotification();
-    }
-}
-
-function convertRouteData(apiRouteData) {
-    return apiRouteData.map(point => ({
-        lat: parseFloat(point.coordinateY),
-        lng: parseFloat(point.coordinateX),
-        timestamp: point.RTCTime
-    }));
-}
+let markers = [];
+let RoutePointsOverlay;
 
 // 測試數據
 const testRouteData = [
@@ -127,34 +50,199 @@ const testRouteData = [
     { lat: 25.039242, lng: 121.500951, name: "台北市孔廟" }
 ];
 
+async function loadGoogleMapsLibraries() {
+    try {
+        await google.maps.importLibrary("maps");
+        await google.maps.importLibrary("routes");
+        await google.maps.importLibrary("core");
 
-// 將路線點分割成多個組
-function splitRouteData(routeData, maxWaypoints = 23) {
-    const groups = [];
-    for (let i = 0; i < routeData.length; i += maxWaypoints) {
-        groups.push(routeData.slice(i, Math.min(i + maxWaypoints, routeData.length)));
+        return {
+            Map: google.maps.Map,
+            DirectionsService: google.maps.DirectionsService,
+            DirectionsRenderer: google.maps.DirectionsRenderer,
+            OverlayView: google.maps.OverlayView
+        };
+    } catch (error) {
+        console.error("Error loading Google Maps libraries:", error);
+        throw error;
     }
-    return groups;
 }
 
-// 繪製行車路線
-async function drawDrivingRouteOnMap(routeData) {
+// 初始化函數
+async function initMap() {
+    try {
+        const {
+            Map,
+            DirectionsService,
+            DirectionsRenderer,
+            OverlayView
+        } = await loadGoogleMapsLibraries();
+
+        console.log("Libraries loaded, OverlayView:", OverlayView);
+
+        // Create map
+        map = new Map(document.getElementById('map'), {
+            center: { lat: 25.033964, lng: 121.564468 }, // Taipei city center
+            mapId: "5588836", // 使用預設的地圖 ID
+            zoom: 12
+        });
+
+        // Initialize DirectionsService and DirectionsRenderer
+        directionsService = new DirectionsService();
+        directionsRenderer = new DirectionsRenderer({
+            map: map,
+            suppressMarkers: true,
+            polylineOptions: {
+                strokeColor: '#4285F4',
+                strokeWeight: 5
+            }
+        });
+
+        // Define RoutePointsOverlay class
+        if (OverlayView) {
+            RoutePointsOverlay = class extends OverlayView {
+                constructor(points) {
+                    super();
+                    this.points = points;
+                }
+
+                onAdd() {
+                    this.div = document.createElement('div');
+                    this.div.style.position = 'absolute';
+                }
+
+                draw() {
+                    const overlayProjection = this.getProjection();
+                    const div = this.div;
+                    div.innerHTML = '';
+
+                    this.points.forEach(point => {
+                        const pos = overlayProjection.fromLatLngToDivPixel(new google.maps.LatLng(point.lat, point.lng));
+                        const dot = document.createElement('div');
+                        dot.style.position = 'absolute';
+                        dot.style.left = `${pos.x}px`;
+                        dot.style.top = `${pos.y}px`;
+                        dot.style.width = '4px';
+                        dot.style.height = '4px';
+                        dot.style.borderRadius = '50%';
+                        dot.style.backgroundColor = 'blue';
+                        div.appendChild(dot);
+                    });
+                }
+
+                onRemove() {
+                    if (this.div) {
+                        this.div.parentNode.removeChild(this.div);
+                        delete this.div;
+                    }
+                }
+            };
+            console.log("RoutePointsOverlay class defined successfully");
+        } else {
+            console.error("OverlayView is not defined");
+        }
+
+        // Add button click event listener
+        document.getElementById('viewMapButton').addEventListener('click', handleViewMapClick);
+
+        console.log("Map initialized successfully");
+    } catch (error) {
+        console.error("Error initializing map:", error);
+    }
+}
+
+// 處理查看地圖按鈕點擊
+async function handleViewMapClick() {
+    showLoading();
+    try {
+        const routeData = await fetchRouteData();
+        await drawOptimizedRouteOnMap(routeData);
+        // await drawOptimizedRouteOnMap(testRouteData);
+    } catch (error) {
+        console.error("Error handling map view:", error);
+        showErrorNotification("無法加載路線數據。");
+    } finally {
+        hideLoading();
+    }
+}
+
+// 獲取路線數據
+async function fetchRouteData() {
+
+    const jsonStringFromLocalStorage = localStorage.getItem("userData");
+    const getUserData = JSON.parse(jsonStringFromLocalStorage);
+    const user_token = getUserData.token;
+
+    var action = "getCarRoute";
+    var source = "HBEVBACKEND";
+    var chsmtoGetManualList = action + source + "HBEVCarBApi";
+    var chsm = CryptoJS.MD5(chsmtoGetManualList).toString().toLowerCase();
+
+    var orderNo = sessionStorage.getItem("orderNo");
+    const orderNoId = JSON.stringify({orderNo: orderNo});
+
+    try {
+        const response = await $.ajax({
+            type: "POST",
+            url: `${apiURL}/car`,
+            headers: { Authorization: "Bearer " + user_token },
+            data: {
+                action: action,
+                source: source,
+                chsm: chsm,
+                data: orderNoId
+            }
+        });
+
+        if (response.returnCode === "1") {
+            return convertRouteData(response.returnData);
+        } else {
+            throw new Error("API returned an error");
+        }
+    } catch (error) {
+        console.error("Error fetching car route:", error);
+        throw error;
+    }
+}
+
+// 轉換路線數據格式
+function convertRouteData(apiRouteData) {
+    return apiRouteData.map(point => ({
+        lat: parseFloat(point.coordinateY),
+        lng: parseFloat(point.coordinateX),
+        timestamp: point.RTCTime
+    }));
+}
+
+// 數據抽樣函數
+function sampleRouteData(data, maxPoints = 300) {
+    if (data.length <= maxPoints) return data;
+    const step = Math.ceil(data.length / maxPoints);
+    return data.filter((_, index) => index % step === 0);
+}
+
+// 優化後的路線繪製函數
+async function drawOptimizedRouteOnMap(routeData) {
     if (routeData.length < 2) {
         console.error("At least two points are required to draw a route");
         return;
     }
 
-    // 清除之前的標記
+    // 清除之前的標記和覆蓋物
     clearMarkers();
+    if (window.routePointsOverlay) {
+        window.routePointsOverlay.setMap(null);
+    }
+
+    // 數據抽樣
+    const sampledData = sampleRouteData(routeData);
 
     // 分割路線點
-    const routeGroups = splitRouteData(routeData);
+    const routeGroups = splitRouteData(sampledData, 25);  // 每組最多 25 個點
 
-    for (let i = 0; i < routeGroups.length; i++) {
-        const group = routeGroups[i];
+    const drawGroup = async (group, index) => {
         const origin = group[0];
         const destination = group[group.length - 1];
-
         const waypoints = group.slice(1, -1).map(point => ({
             location: new google.maps.LatLng(point.lat, point.lng),
             stopover: true
@@ -164,9 +252,8 @@ async function drawDrivingRouteOnMap(routeData) {
             origin: new google.maps.LatLng(origin.lat, origin.lng),
             destination: new google.maps.LatLng(destination.lat, destination.lng),
             waypoints: waypoints,
-            travelMode: google.maps.TravelMode.DRIVING
-            // travelMode: "TWO_WHEELER"
-            
+            travelMode: google.maps.TravelMode.DRIVING,
+            // travelMode: google.maps.TravelMode.TWO_WHEELER // 使用摩托車模式
         };
 
         try {
@@ -180,7 +267,6 @@ async function drawDrivingRouteOnMap(routeData) {
                 });
             });
 
-            // 為每個組創建一個新的 DirectionsRenderer
             const renderer = new google.maps.DirectionsRenderer({
                 map: map,
                 suppressMarkers: true,
@@ -191,20 +277,16 @@ async function drawDrivingRouteOnMap(routeData) {
             });
             renderer.setDirections(result);
 
-            // 添加該組的標記
-            // `停靠點 ${i * 23 + index + 1}`;
-            group.forEach((point, index) => {
-                let markerTitle = index === 0 && i === 0 ? '起點' : 
-                                  index === group.length - 1 && i === routeGroups.length - 1 ? '終點' : 
-                                  ``;
-                let markerColor = index === 0 && i === 0 ? 'green' : 
-                                  index === group.length - 1 && i === routeGroups.length - 1 ? 'red' : 
-                                  '';
-                addMarker(point, markerTitle, markerColor);
-            });
+            // 只為起點和終點添加標記
+            if (index === 0) {
+                addMarker(origin, 'start', '起點');
+            }
+            if (index === routeGroups.length - 1) {
+                addMarker(destination, 'end', '終點');
+            }
 
-            // 調整地圖視圖以顯示整個路線
-            if (i === 0) {
+            // 調整地圖視圖（只對第一組進行）
+            if (index === 0) {
                 const bounds = new google.maps.LatLngBounds();
                 result.routes[0].overview_path.forEach(point => bounds.extend(point));
                 map.fitBounds(bounds);
@@ -212,31 +294,69 @@ async function drawDrivingRouteOnMap(routeData) {
         } catch (error) {
             console.error("Directions request failed due to " + error);
         }
+    };
+
+    // 使用 OverlayView 繪製所有中間點
+    window.routePointsOverlay = new RoutePointsOverlay(sampledData.slice(1, -1));
+    window.routePointsOverlay.setMap(map);
+
+    // 分批處理路線組
+    for (let i = 0; i < routeGroups.length; i++) {
+        await new Promise(resolve => {
+            requestAnimationFrame(async () => {
+                await drawGroup(routeGroups[i], i);
+                resolve();
+            });
+        });
     }
 }
 
+// 分割路線數據
+function splitRouteData(routeData, maxWaypoints = 23) {
+    const groups = [];
+    for (let i = 0; i < routeData.length; i += maxWaypoints) {
+        groups.push(routeData.slice(i, Math.min(i + maxWaypoints, routeData.length)));
+    }
+    return groups;
+}
+
 // 添加標記
-async function addMarker(position, title, color) {
+async function addMarker(position, type, label) {
     const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
     
     const marker = new AdvancedMarkerElement({
         position: position,
         map: map,
-        title: title,
-        content: buildMarkerContent(title, color)
+        content: buildMarkerContent(type, label)
     });
     markers.push(marker);
 }
 
 // 構建標記內容
-function buildMarkerContent(title, color) {
+function buildMarkerContent(type, label) {
     const content = document.createElement('div');
     content.classList.add('custom-marker');
-    content.style.backgroundColor = color;
-    content.style.color = 'white';
-    content.style.padding = '5px 10px';
-    content.style.borderRadius = '5px';
-    content.textContent = title;
+
+    if (type === 'start' || type === 'end') {
+        content.style.padding = '5px 10px';
+        content.style.borderRadius = '4px';
+        content.style.color = 'white';
+        content.style.fontWeight = 'bold';
+        content.style.fontSize = '14px';
+        content.textContent = label;
+
+        if (type === 'start') {
+            content.style.backgroundColor = 'green';
+        } else {
+            content.style.backgroundColor = 'red';
+        }
+    } else {
+        content.style.width = '10px';
+        content.style.height = '10px';
+        content.style.borderRadius = '50%';
+        content.style.backgroundColor = 'blue';
+    }
+
     return content;
 }
 
@@ -246,8 +366,42 @@ function clearMarkers() {
     markers = [];
 }
 
+// 顯示 loading 狀態
+function showLoading() {
+    const loadingDiv = document.createElement('div');
+    loadingDiv.id = 'map-loading';
+    loadingDiv.style.position = 'absolute';
+    loadingDiv.style.top = '50%';
+    loadingDiv.style.left = '50%';
+    loadingDiv.style.transform = 'translate(-50%, -50%)';
+    loadingDiv.style.padding = '20px';
+    loadingDiv.style.background = 'rgba(255, 255, 255, 0.8)';
+    loadingDiv.style.borderRadius = '10px';
+    loadingDiv.style.zIndex = '1000';
+    loadingDiv.innerHTML = '正在加載路線...';
+    
+    document.getElementById('map').appendChild(loadingDiv);
+}
+
+// 隱藏 loading 狀態
+function hideLoading() {
+    const loadingDiv = document.getElementById('map-loading');
+    if (loadingDiv) {
+        loadingDiv.remove();
+    }
+}
+
+// 顯示錯誤通知
+function showErrorNotification(message) {
+    // 實現錯誤通知的邏輯，可以使用 alert 或自定義的通知組件
+    alert(message);
+}
+
+// 模態框相關邏輯
 document.getElementById("viewMapButton").addEventListener("click", function() {
+    initMap();
     $('#mapModal').modal('show');
+    
     
     // 確保地圖在模態框顯示後初始化
     $('#mapModal').on('shown.bs.modal', function () {
@@ -256,13 +410,10 @@ document.getElementById("viewMapButton").addEventListener("click", function() {
         } else {
             google.maps.event.trigger(map, 'resize');
             // 重新加載數據並繪製路線
-            loadDataAndDrawRoute();
+            handleViewMapClick();
         }
     });
 });
 
 // 當 DOM 加載完成後初始化地圖
-document.addEventListener('DOMContentLoaded', function() {
-    // 不要在這裡直接調用 initMap，而是等待按鈕點擊
-    initMap();
-});
+// document.addEventListener('DOMContentLoaded', initMap);

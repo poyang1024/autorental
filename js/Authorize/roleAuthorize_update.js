@@ -234,6 +234,10 @@ $(document).ready(function () {
 		{ data: "insert", title: "新增" },
 		{ data: "update", title: "修改" },
 		{ data: "delete", title: "刪除" },
+		{ data: "powerOn", title: "解鎖" },
+		{ data: "powerOff", title: "上鎖" },
+		{ data: "orderDetail", title: "前往訂單" },
+		{ data: "carMap", title: "前往地圖" },
 	];
 
 	var columns4 = [];
@@ -253,6 +257,10 @@ $(document).ready(function () {
 			// insert: '<input type="checkbox" name="rowCheckbox" data-id="14" data-column="insert" />',
 			// update: '<input type="checkbox" name="rowCheckbox" data-id="14" data-column="update" />',
 			// delete: '<input type="checkbox" name="rowCheckbox" data-id="14" data-column="delete" disabled/>',
+			powerOn: '<span></span>',
+			powerOff: '<span></span>',
+			orderDetail: '<span></span>',
+			carMap: '<span></span>',
 		},
 		{
 			empty: "品牌定義列表",
@@ -261,6 +269,10 @@ $(document).ready(function () {
 			insert: '<input type="checkbox" name="rowCheckbox" data-id="15" data-column="insert" />',
 			update: '<input type="checkbox" name="rowCheckbox" data-id="15" data-column="update" />',
 			delete: '<input type="checkbox" name="rowCheckbox" data-id="15" data-column="delete" disabled/>',
+			powerOn: '<span></span>',
+			powerOff: '<span></span>',
+			orderDetail: '<span></span>',
+			carMap: '<span></span>',
 		},
 		{
 			empty: "品牌定義資料",
@@ -269,6 +281,10 @@ $(document).ready(function () {
 			insert: '<input type="checkbox" name="rowCheckbox" data-id="16" data-column="insert" />',
 			update: '<input type="checkbox" name="rowCheckbox" data-id="16" data-column="update" />',
 			delete: '<input type="checkbox" name="rowCheckbox" data-id="16" data-column="delete" disabled/>',
+			powerOn: '<span></span>',
+			powerOff: '<span></span>',
+			orderDetail: '<span></span>',
+			carMap: '<span></span>',
 		},
 		{
 			empty: "車型定義列表",
@@ -277,6 +293,10 @@ $(document).ready(function () {
 			insert: '<input type="checkbox" name="rowCheckbox" data-id="23" data-column="insert" />',
 			update: '<input type="checkbox" name="rowCheckbox" data-id="23" data-column="update" />',
 			delete: '<input type="checkbox" name="rowCheckbox" data-id="23" data-column="delete" disabled/>',
+			powerOn: '<span></span>',
+			powerOff: '<span></span>',
+			orderDetail: '<span></span>',
+			carMap: '<span></span>',
 		},
 		{
 			empty: "車型定義資料",
@@ -285,6 +305,10 @@ $(document).ready(function () {
 			insert: '<input type="checkbox" name="rowCheckbox" data-id="24" data-column="insert" />',
 			update: '<input type="checkbox" name="rowCheckbox" data-id="24" data-column="update" />',
 			delete: '<input type="checkbox" name="rowCheckbox" data-id="24" data-column="delete" disabled/>',
+			powerOn: '<span></span>',
+			powerOff: '<span></span>',
+			orderDetail: '<span></span>',
+			carMap: '<span></span>',
 		},
 		{
 			empty: "車籍定義列表",
@@ -293,6 +317,10 @@ $(document).ready(function () {
 			insert: '<input type="checkbox" name="rowCheckbox" data-id="30" data-column="insert" />',
 			update: '<input type="checkbox" name="rowCheckbox" data-id="30" data-column="update" />',
 			delete: '<input type="checkbox" name="rowCheckbox" data-id="30" data-column="delete" disabled/>',
+			powerOn: '<span></span>',
+			powerOff: '<span></span>',
+			orderDetail: '<span></span>',
+			carMap: '<span></span>',
 		},
 		{
 			empty: "車籍定義資料",
@@ -301,6 +329,10 @@ $(document).ready(function () {
 			insert: '<input type="checkbox" name="rowCheckbox" data-id="31" data-column="insert" />',
 			update: '<input type="checkbox" name="rowCheckbox" data-id="31" data-column="update" />',
 			delete: '<input type="checkbox" name="rowCheckbox" data-id="31" data-column="delete" disabled/>',
+			powerOn: '<span></span>',
+			powerOff: '<span></span>',
+			orderDetail: '<span></span>',
+			carMap: '<span></span>',
 		},
 		{
 			empty: "電動車地圖",
@@ -309,6 +341,22 @@ $(document).ready(function () {
 			insert: '<input type="checkbox" name="rowCheckbox" data-id="32" data-column="insert" />',
 			update: '<input type="checkbox" name="rowCheckbox" data-id="32" data-column="update" />',
 			delete: '<input type="checkbox" name="rowCheckbox" data-id="32" data-column="delete" disabled/>',
+			powerOn: '<span></span>',
+			powerOff: '<span></span>',
+			orderDetail: '<span></span>',
+			carMap: '<span></span>',
+		},
+		{
+			empty: "電動車車輛監控",
+			id: 38,
+			read: '<input type="checkbox" name="rowCheckbox" data-id="38" data-column="read" />',
+			insert: '<span></span>',
+			update: '<span></span>',
+			delete: '<span></span>',
+			powerOn: '<input type="checkbox" name="rowCheckbox" data-id="38" data-column="powerOn" />',
+			powerOff: '<input type="checkbox" name="rowCheckbox" data-id="38" data-column="powerOff" />',
+			orderDetail: '<input type="checkbox" name="rowCheckbox" data-id="38" data-column="orderDetail" />',
+			carMap: '<input type="checkbox" name="rowCheckbox" data-id="38" data-column="carMap" />',
 		}
 	];
 	var table4DataArray = Object.values(table4Data);

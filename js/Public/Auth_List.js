@@ -46,6 +46,34 @@ function handlePagePermissions(currentUser, currentUrl) {
 						downloadButtons[n].style.display = "inline-block";
 					}
 				}
+
+				if (page.auth.includes("powerOn")) {
+					var powerOnButtons = document.querySelectorAll("[data-button-type='powerOn']");
+					for (var n = 0; n < powerOnButtons.length; n++) {
+						powerOnButtons[n].style.display = "inline-block";
+					}
+				}
+
+				if (page.auth.includes("powerOff")) {
+					var powerOffButtons = document.querySelectorAll("[data-button-type='powerOff']");
+					for (var n = 0; n < powerOffButtons.length; n++) {
+						powerOffButtons[n].style.display = "inline-block";
+					}
+				}
+
+				if (page.auth.includes("orderDetail")) {
+					var orderDetailButtons = document.querySelectorAll("[data-button-type='orderDetail']");
+					for (var n = 0; n < orderDetailButtons.length; n++) {
+						orderDetailButtons[n].style.display = "inline-block";
+					}
+				}
+
+				if (page.auth.includes("carMap")) {
+					var carMapButtons = document.querySelectorAll("[data-button-type='carMap']");
+					for (var n = 0; n < carMapButtons.length; n++) {
+						carMapButtons[n].style.display = "inline-block";
+					}
+				}
 			}
 		}
 	}
