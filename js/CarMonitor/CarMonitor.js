@@ -144,8 +144,9 @@ function setupEventListeners() {
 
         if (selectedCompanyId) filterData.companyId = selectedCompanyId;
         if (selectedSiteId) filterData.siteId = selectedSiteId;
-        if (selectedStatusId) filterData.carStatus = selectedStatusId;
-        if (selectedcarStatus) filterData.status = selectedcarStatus;
+        if (selectedcarStatus) filterData.carStatus = selectedcarStatus;
+        if (selectedStatusId) filterData.status = selectedStatusId;
+        
 
         if (Object.keys(filterData).length > 0) {
             await sendApiRequest(filterData);
@@ -241,7 +242,7 @@ function updatePageWithData(responseData) {
                     var lockButtonHtml = `<button class="btn btn-danger text-white lock-button" style="display:none; margin-bottom:5px " data-button-type="powerOff" data-id="${row.id}">上鎖</button>`;
                     var orderDetailButtonHtml = `<button class="btn btn-primary text-white" style="display:none; margin-bottom:5px" data-button-type="orderDetail" data-id="${row.id}">前往訂單</button>`;
                     var carMapButtonHtml = `<button class="btn btn-primary text-white" style="display:none" data-button-type="carMap" data-id="${row.id}">前往地圖</button>`;
-                    return unlockButtonHtml + "&nbsp;" + lockButtonHtml
+                    return unlockButtonHtml + "&nbsp;" + lockButtonHtml;
                     // return unlockButtonHtml + "&nbsp;" + lockButtonHtml + "&nbsp;" + orderDetailButtonHtml + "&nbsp;" + carMapButtonHtml;
                 },
             },
