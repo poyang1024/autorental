@@ -5,109 +5,109 @@ $(document).ready(function () {
 
 function setupCreateMessage() {
     const uploadForm = document.getElementById("uploadForm");
-    const photoUploadContainer = document.getElementById("photoUploadContainer");
-    const addMorePhotosButton = document.getElementById("addMorePhotos");
-    let photoCount = 1;
+    // const photoUploadContainer = document.getElementById("photoUploadContainer");
+    // const addMorePhotosButton = document.getElementById("addMorePhotos");
+    // let photoCount = 1;
 
-    function clearPreview(previewElement) {
-        if (previewElement) {
-            previewElement.innerHTML = '';
-            previewElement.style.display = 'none';
-        }
-    }
+    // function clearPreview(previewElement) {
+    //     if (previewElement) {
+    //         previewElement.innerHTML = '';
+    //         previewElement.style.display = 'none';
+    //     }
+    // }
 
-    function handleFileSelect(event) {
-        const input = event.target;
-        const files = input.files;
-        const uploadItem = input.closest('.upload-item');
-        let photoPreview = uploadItem.querySelector('.photo-preview');
+    // function handleFileSelect(event) {
+    //     const input = event.target;
+    //     const files = input.files;
+    //     const uploadItem = input.closest('.upload-item');
+    //     let photoPreview = uploadItem.querySelector('.photo-preview');
         
-        if (!photoPreview) {
-            photoPreview = document.createElement('div');
-            photoPreview.className = 'photo-preview';
-            photoPreview.style.display = 'none';
-            uploadItem.appendChild(photoPreview);
-        }
+    //     if (!photoPreview) {
+    //         photoPreview = document.createElement('div');
+    //         photoPreview.className = 'photo-preview';
+    //         photoPreview.style.display = 'none';
+    //         uploadItem.appendChild(photoPreview);
+    //     }
 
-        clearPreview(photoPreview);
+    //     clearPreview(photoPreview);
         
-        if (files.length === 0) {
-            return;
-        }
+    //     if (files.length === 0) {
+    //         return;
+    //     }
 
-        for (let i = 0; i < files.length; i++) {
-            const file = files[i];
-            if (file) {
-                const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
-                if (!allowedTypes.includes(file.type)) {
-                    alert('請上傳 JPG、PNG 或 GIF 格式的圖片。');
-                    continue;
-                }
+    //     for (let i = 0; i < files.length; i++) {
+    //         const file = files[i];
+    //         if (file) {
+    //             const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+    //             if (!allowedTypes.includes(file.type)) {
+    //                 alert('請上傳 JPG、PNG 或 GIF 格式的圖片。');
+    //                 continue;
+    //             }
 
-                const maxSize = 5 * 1024 * 1024; // 5MB
-                if (file.size > maxSize) {
-                    alert('檔案大小不能超過 5MB。');
-                    continue;
-                }
+    //             const maxSize = 5 * 1024 * 1024; // 5MB
+    //             if (file.size > maxSize) {
+    //                 alert('檔案大小不能超過 5MB。');
+    //                 continue;
+    //             }
 
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const imgContainer = document.createElement('div');
-                    imgContainer.className = 'col-sm-3 mb-3 position-relative';
+    //             const reader = new FileReader();
+    //             reader.onload = function(e) {
+    //                 const imgContainer = document.createElement('div');
+    //                 imgContainer.className = 'col-sm-3 mb-3 position-relative';
                     
-                    const img = document.createElement('img');
-                    img.src = e.target.result;
-                    img.style.width = "300px";
-                    img.style.height = "300px";
-                    img.style.objectFit = "cover";
+    //                 const img = document.createElement('img');
+    //                 img.src = e.target.result;
+    //                 img.style.width = "300px";
+    //                 img.style.height = "300px";
+    //                 img.style.objectFit = "cover";
                     
-                    imgContainer.appendChild(img);
-                    photoPreview.appendChild(imgContainer);
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-        photoPreview.style.display = 'flex';
-        photoPreview.style.flexWrap = 'wrap';
-    }
+    //                 imgContainer.appendChild(img);
+    //                 photoPreview.appendChild(imgContainer);
+    //             };
+    //             reader.readAsDataURL(file);
+    //         }
+    //     }
+    //     photoPreview.style.display = 'flex';
+    //     photoPreview.style.flexWrap = 'wrap';
+    // }
 
-    function deletePhotoUpload(event) {
-        const uploadItem = event.target.closest('.upload-item');
-        if (uploadItem) {
-            // Remove the entire upload item
-            uploadItem.remove();
-        }
-    }
+    // function deletePhotoUpload(event) {
+    //     const uploadItem = event.target.closest('.upload-item');
+    //     if (uploadItem) {
+    //         // Remove the entire upload item
+    //         uploadItem.remove();
+    //     }
+    // }
 
-    document.getElementById("messagePhotoUpload0").addEventListener("change", handleFileSelect);
+    // document.getElementById("messagePhotoUpload0").addEventListener("change", handleFileSelect);
 
-    photoUploadContainer.addEventListener('click', function(event) {
-        if (event.target.classList.contains('delete-photo')) {
-            deletePhotoUpload(event);
-        }
-    });
+    // photoUploadContainer.addEventListener('click', function(event) {
+    //     if (event.target.classList.contains('delete-photo')) {
+    //         deletePhotoUpload(event);
+    //     }
+    // });
 
-    if (addMorePhotosButton) {
-        addMorePhotosButton.addEventListener("click", function(event) {
-            event.preventDefault();
-            console.log('addMorePhotos called');
+    // if (addMorePhotosButton) {
+    //     addMorePhotosButton.addEventListener("click", function(event) {
+    //         event.preventDefault();
+    //         console.log('addMorePhotos called');
 
-            const newPhotoInput = `
-                <div class="upload-item position-relative">
-                    <label for="messagePhotoUpload${photoCount}" class="form-label">上傳訊息照片</label>
-                    <input type="file" class="form-control messagePhotoUpload" id="messagePhotoUpload${photoCount}" name="messagePhotoUpload[]" accept=".jpg,.jpeg,.png,.gif">
-                    <small class="form-text text-muted">允許的檔案類型：JPG, JPEG, PNG, GIF。</small>
-                    <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 mt-1 me-1 delete-photo">X</button>
-                </div>
-            `;
-            photoUploadContainer.insertAdjacentHTML('beforeend', newPhotoInput);
+    //         const newPhotoInput = `
+    //             <div class="upload-item position-relative">
+    //                 <label for="messagePhotoUpload${photoCount}" class="form-label">上傳訊息照片</label>
+    //                 <input type="file" class="form-control messagePhotoUpload" id="messagePhotoUpload${photoCount}" name="messagePhotoUpload[]" accept=".jpg,.jpeg,.png,.gif">
+    //                 <small class="form-text text-muted">允許的檔案類型：JPG, JPEG, PNG, GIF。</small>
+    //                 <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 mt-1 me-1 delete-photo">X</button>
+    //             </div>
+    //         `;
+    //         photoUploadContainer.insertAdjacentHTML('beforeend', newPhotoInput);
             
-            const newInput = document.getElementById(`messagePhotoUpload${photoCount}`);
-            newInput.addEventListener("change", handleFileSelect);
+    //         const newInput = document.getElementById(`messagePhotoUpload${photoCount}`);
+    //         newInput.addEventListener("change", handleFileSelect);
             
-            photoCount++;
-        });
-    }
+    //         photoCount++;
+    //     });
+    // }
 
     if (uploadForm) {
         uploadForm.addEventListener("submit", function (event) {
