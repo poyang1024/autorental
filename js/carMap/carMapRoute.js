@@ -214,11 +214,20 @@ function convertRouteData(apiRouteData) {
     }));
 }
 
-// 數據抽樣函數
+// 數據抽樣函數，確保拿到起點終點
 function sampleRouteData(data, maxPoints = 300) {
     if (data.length <= maxPoints) return data;
-    const step = Math.ceil(data.length / maxPoints);
-    return data.filter((_, index) => index % step === 0);
+    
+    const result = [data[0]]; // 總是包含第一個點
+    const step = (data.length - 1) / (maxPoints - 2); // 調整步長以容納起點和終點
+    
+    for (let i = 1; i < maxPoints - 1; i++) {
+        const index = Math.floor(i * step);
+        result.push(data[index]);
+    }
+    
+    result.push(data[data.length - 1]); // 總是包含最後一個點
+    return result;
 }
 
 // 優化後的路線繪製函數
@@ -228,17 +237,26 @@ async function drawOptimizedRouteOnMap(routeData) {
         return;
     }
 
-    // 清除之前的標記和覆蓋物
+    // Clear previous markers and overlays
     clearMarkers();
     if (window.routePointsOverlay) {
         window.routePointsOverlay.setMap(null);
     }
 
-    // 數據抽樣
+    // Sample data
     const sampledData = sampleRouteData(routeData);
 
-    // 分割路線點
-    const routeGroups = splitRouteData(sampledData, 25);  // 每組最多 25 個點
+    // Split route points
+    const routeGroups = splitRouteData(sampledData, 25);
+
+    // Create a single polyline for the entire route
+    const path = new google.maps.MVCArray();
+    const polyline = new google.maps.Polyline({
+        path: path,
+        strokeColor: '#4285F4',
+        strokeWeight: 5,
+        map: map
+    });
 
     const drawGroup = async (group, index) => {
         const origin = group[0];
@@ -252,8 +270,7 @@ async function drawOptimizedRouteOnMap(routeData) {
             origin: new google.maps.LatLng(origin.lat, origin.lng),
             destination: new google.maps.LatLng(destination.lat, destination.lng),
             waypoints: waypoints,
-            travelMode: google.maps.TravelMode.DRIVING,
-            // travelMode: google.maps.TravelMode.TWO_WHEELER // 使用摩托車模式
+            travelMode: google.maps.TravelMode.TWO_WHEELER
         };
 
         try {
@@ -267,17 +284,11 @@ async function drawOptimizedRouteOnMap(routeData) {
                 });
             });
 
-            const renderer = new google.maps.DirectionsRenderer({
-                map: map,
-                suppressMarkers: true,
-                polylineOptions: {
-                    strokeColor: '#4285F4',
-                    strokeWeight: 5
-                }
-            });
-            renderer.setDirections(result);
+            // Add the route points to the polyline
+            const routePath = result.routes[0].overview_path;
+            routePath.forEach(point => path.push(point));
 
-            // 只為起點和終點添加標記
+            // Add markers only for start and end points
             if (index === 0) {
                 addMarker(origin, 'start', '起點');
             }
@@ -285,7 +296,7 @@ async function drawOptimizedRouteOnMap(routeData) {
                 addMarker(destination, 'end', '終點');
             }
 
-            // 調整地圖視圖（只對第一組進行）
+            // Adjust map view (only for the first group)
             if (index === 0) {
                 const bounds = new google.maps.LatLngBounds();
                 result.routes[0].overview_path.forEach(point => bounds.extend(point));
@@ -296,11 +307,7 @@ async function drawOptimizedRouteOnMap(routeData) {
         }
     };
 
-    // 使用 OverlayView 繪製所有中間點
-    window.routePointsOverlay = new RoutePointsOverlay(sampledData.slice(1, -1));
-    window.routePointsOverlay.setMap(map);
-
-    // 分批處理路線組
+    // Process route groups in batches
     for (let i = 0; i < routeGroups.length; i++) {
         await new Promise(resolve => {
             requestAnimationFrame(async () => {

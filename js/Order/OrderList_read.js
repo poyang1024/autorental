@@ -369,9 +369,3 @@ $(document).ready(function () {
 function updatePageWithData(responseData, table) {
     table.clear().rows.add(responseData).draw();
 }
-
-// Back button functionality
-document.getElementById("backButton").addEventListener("click", function () {
-    sessionStorage.removeItem("readOrderId");
-    history.back();
-});
