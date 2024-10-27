@@ -63,11 +63,11 @@ async function initializeCarmap() {
         await initMap();
 
         // 檢查 localStorage 是否有搜尋參數
-        const licensePlateNumber = localStorage.getItem('carMapSearch');
+        const licensePlateNumber = sessionStorage.getItem('carMapSearch');
         
         if (licensePlateNumber) {
             // 清除 localStorage 中的搜尋參數
-            localStorage.removeItem('carMapSearch');
+            sessionStorage.removeItem('carMapSearch');
             
             // 設置到搜索欄位中
             $('#licensePlateNumber').val(licensePlateNumber);
