@@ -240,10 +240,9 @@ function updatePageWithData(responseData) {
                 render: function (data, type, row) {
                     var unlockButtonHtml = `<button class="btn btn-success text-white unlock-button" style="display:none; margin-bottom:5px" data-button-type="powerOn" data-id="${row.id}">解鎖</button>`;
                     var lockButtonHtml = `<button class="btn btn-danger text-white lock-button" style="display:none; margin-bottom:5px " data-button-type="powerOff" data-id="${row.id}">上鎖</button>`;
-                    var orderDetailButtonHtml = `<button class="btn btn-primary text-white" style="display:none; margin-bottom:5px" data-button-type="orderDetail" data-id="${row.id}">前往訂單</button>`;
-                    var carMapButtonHtml = `<button class="btn btn-primary text-white" style="display:none" data-button-type="carMap" data-id="${row.id}">前往地圖</button>`;
-                    return unlockButtonHtml + "&nbsp;" + lockButtonHtml;
-                    // return unlockButtonHtml + "&nbsp;" + lockButtonHtml + "&nbsp;" + orderDetailButtonHtml + "&nbsp;" + carMapButtonHtml;
+                    var orderDetailButtonHtml = `<a href="../orderList/orderDetail_read.html" data-id="${row.orderNo}" data-button-type="orderDetail" class="btn btn-primary text-white" style="display:none; margin-bottom:5px">前往訂單</a>`;
+                    var carMapButtonHtml = `<a href="../carMap/carMap.html" data-id="${row.licensePlateNumber}" data-button-type="carMap" class="btn btn-primary text-white" style="display:none; margin-bottom:5px" onclick="setCarMapSearch('${row.licensePlateNumber}')">前往地圖</a>`;
+                    return unlockButtonHtml + "&nbsp;" + lockButtonHtml + "&nbsp;" + orderDetailButtonHtml + "&nbsp;" + carMapButtonHtml;
                 },
             },
             { data: "RTCTime" },
@@ -265,6 +264,10 @@ function updatePageWithData(responseData) {
         order: [],
     });
     table.rows.add(data).draw();
+}
+
+function setCarMapSearch(licensePlateNumber) {
+    localStorage.setItem('carMapSearch', licensePlateNumber);
 }
 
 // 設置按鈕點擊事件

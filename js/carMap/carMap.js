@@ -56,18 +56,30 @@ async function initializeCarmap() {
         ]);
 
         // 設置 datetime 輸入框的默認值為當前時間
-        $('#dateTime').val(getCurrentDateTime());
+        const currentDateTime = getCurrentDateTime();
+        $('#dateTime').val(currentDateTime);
 
         // 初始化地圖
         await initMap();
 
-        // 設置 datetime 輸入框的默認值為當前時間
-        const currentDateTime = getCurrentDateTime();
-        console.log("Current date time:", currentDateTime);
-        $('#dateTime').val(currentDateTime);
-
-        // 執行 初始化搜索
-        await performDefaultSearch(currentDateTime);
+        // 檢查 localStorage 是否有搜尋參數
+        const licensePlateNumber = localStorage.getItem('carMapSearch');
+        
+        if (licensePlateNumber) {
+            // 清除 localStorage 中的搜尋參數
+            localStorage.removeItem('carMapSearch');
+            
+            // 設置到搜索欄位中
+            $('#licensePlateNumber').val(licensePlateNumber);
+            
+            // 執行搜索
+            await loadVehicles({
+                licensePlateNumber: licensePlateNumber
+            });
+        } else {
+            // 否則執行默認搜索
+            await performDefaultSearch(currentDateTime);
+        }
     } catch (error) {
         console.error("Error during initialization:", error);
         showErrorNotification();
