@@ -31,7 +31,6 @@ $(document).ready(function () {
 				userAuth = userAuth.concat(item.auth);
 			}
 		});
-		console.log(userAuth);
 		return userAuth;
 	}
 });
