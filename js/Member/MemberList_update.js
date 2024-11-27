@@ -116,7 +116,7 @@ function populateMemberDetails(memberData) {
                 break;
             case "1": // 個人電子發票（無統編）
             $("#Mem-invoiceEmail, #Mem-mobileCarrier").closest('.col-sm-6').show();
-            $("#Mem-invoiceEmail, #Mem-mobileCarrier").prop('required', true);
+            // $("#Mem-invoiceEmail, #Mem-mobileCarrier").prop('required', true); // 修改為非必填
             // Check if memberData.email has a value, if not use #Mem-email value
             if (memberData.email) {
                 $("#Mem-invoiceEmail").val(memberData.email);
