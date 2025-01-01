@@ -251,8 +251,8 @@ function updatePageWithData(responseData) {
             { data: "licensePlateNumber" },
             { data: "IMEI" },
             { data: "carBigBatterySOC" },
-            { data: "gpsBatteryVoltage" },
             { data: "carVoltage" },
+            { data: "gpsBatteryVoltage" },
             { data: "carStatusName" },
             { data: "statusName" },
             { data: "orderNo" }
