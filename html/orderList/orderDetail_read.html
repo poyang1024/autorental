@@ -339,54 +339,96 @@
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- 訂單明細 -->
-                    <div class="block-first">
-                        <div class="tableList">
-                            <h5>訂單明細</h5>
-                            <div class="table-responsive">
-                                <table id= "orderDetailList" class="display table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>費用類型</th>
-                                            <th>金額</th>
-                                            <th>備註</th>
-                                            <th>付款方式</th>
-                                            <th>Tappay交易識別碼</th>
-                                            <th>交易狀態</th>
-                                            <th>操作人</th>
-                                            <th>更新時間</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <!-- 這裡將通過 JavaScript 動態填充訂單明細 -->
-                                    </tbody>
-                                </table>
+
+                    <nav>
+                        <div class=" nav nav-tabs" id="tableTabs" role="tablist">
+                            <a class="nav-link active" id="tab-1" data-bs-toggle="tab" href="#table-1"
+                                role="tab" aria-controls="table-1" aria-selected="true">訂單明細</a>
+
+                            <a class="nav-link" id="tab-2" data-bs-toggle="tab" href="#table-2" role="tab"
+                            aria-controls="table-2" aria-selected="false">發票明細</a>
+
+                            <a class="nav-link" id="tab-3" data-bs-toggle="tab" href="#table-3" role="tab"
+                            aria-controls="table-3" aria-selected="false">取車照片</a>
+
+                            <a class="nav-link" id="tab-4" data-bs-toggle="tab" href="#table-4" role="tab"
+                            aria-controls="table-4" aria-selected="false">還車照片</a>
+                        </div>
+                    </nav>
+
+                    <div class="tab-content" id="tableTabContent">
+                        <div class="tab-pane fade show active" id="table-1" role="tabpanel" aria-labelledby="tab-1">
+                            <div class="tableList">
+                                <div class="table-responsive">
+                                    <h4 class="mt-5">訂單明細</h4>
+                                    <table id= "orderDetailList" class="display table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>費用類型</th>
+                                                <th>金額</th>
+                                                <th>備註</th>
+                                                <th>付款方式</th>
+                                                <th>Tappay交易識別碼</th>
+                                                <th>交易狀態</th>
+                                                <th>操作人</th>
+                                                <th>更新時間</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- 這裡將通過 JavaScript 動態填充訂單明細 -->
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    
-                    <hr class="my-4">
 
-                    <!-- 發票明細 -->
-                    <div class="block-first">
-                        <div class="tableList">
-                            <h5>發票明細</h5>
-                            <div class="table-responsive">
-                                <table id= "invoiceList" class="display table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>發票號碼</th>
-                                            <th>開立時間</th>
-                                            <th>發票面額</th>
-                                            <th>發票狀態</th>
-                                            <th>更新時間</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <!-- 這裡將通過 JavaScript 動態填充訂單明細 -->
-                                    </tbody>
-                                </table>
+                        <div class="tab-pane fade" id="table-2" role="tabpanel" aria-labelledby="tab-2">
+                            <div class="tableList">
+                                <div class="table-responsive">
+                                    <h4 class="mt-5">發票明細</h4>
+                                    <table id= "invoiceList" class="display table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>發票號碼</th>
+                                                <th>開立時間</th>
+                                                <th>發票面額</th>
+                                                <th>發票狀態</th>
+                                                <th>更新時間</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- 這裡將通過 JavaScript 動態填充訂單明細 -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 在 tab-3 內加入 -->
+                        <div class="tab-pane fade" id="table-3" role="tabpanel" aria-labelledby="tab-3">
+                            <div class="tableList">
+                                <div class="table-responsive">
+                                    <h4 class="mt-5">取車照片</h4>
+                                    <div class="display photo-grid" id="pickupPhotoGrid">
+                                        <div class="row g-3">
+                                            <!-- 照片格子會由 JavaScript 動態產生 -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 在 tab-4 內加入 -->
+                        <div class="tab-pane fade" id="table-4" role="tabpanel" aria-labelledby="tab-4">
+                            <div class="tableList">
+                                <div class="table-responsive">
+                                    <h4 class="mt-5">還車照片</h4>
+                                    <div class="display photo-grid" id="returnPhotoGrid">
+                                        <div class="row g-3">
+                                            <!-- 照片格子會由 JavaScript 動態產生 -->
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -402,8 +444,8 @@
                     </div>
 
                     <div class="text-center w-100 pt-3">
-                        <button id="backButton" class="w-25 btn btn-primary btn-md"
-                            type="button">上一頁</button>
+                        <button id="ordereditButton" class="w-25 btn btn-primary btn-md"
+                            type="submit">儲存</button>
                     </div>
 
                     <!-- 行車路線軌跡 popup -->
@@ -565,15 +607,6 @@
             });
         });
     </script> -->
-    
-
-    <script>
-        document.getElementById("backButton").addEventListener("click", function () {
-            //這邊removeItem裡面要改
-            sessionStorage.removeItem("readOrderId");
-            history.back();
-        });
-    </script>
 
     <!-- 加载 Google Maps JavaScript API -->
     <script>
@@ -584,16 +617,33 @@
     <script src="../../js/carMap/carMapRoute.js"></script>
 
     <style>
+        .photo-grid .card {
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 1rem;
+        }
+
+        .photo-grid .card:hover {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .photo-grid img {
+            border-radius: 4px;
+        }
+
+        .photo-grid .position-absolute {
+            border-bottom-left-radius: 4px;
+            border-bottom-right-radius: 4px;
+        }
         .modal-xl {
             max-width: 90%;
             width: 90%;
         }
-        
+
         #map {
             width: 100%;
             height: 70vh;
         }
-        
+
         @media (max-width: 992px) {
             .modal-xl {
                 max-width: 95%;
@@ -601,6 +651,7 @@
             }
         }
     </style>
+
 
 </body>
 

@@ -1,3 +1,275 @@
+// 照片位置對應
+const photoMappings = {
+    '車頭照片': { pick: 'pickFront', return: 'returnFront' },
+    '左前照片': { pick: 'pickLeftFront', return: 'returnLeftFront' },
+    '右前照片': { pick: 'pickRightFront', return: 'returnRightFront' },
+    '左後照片': { pick: 'pickLeftBack', return: 'returnLeftBack' },
+    '右後照片': { pick: 'pickRightBack', return: 'returnRightBack' },
+    '車尾照片': { pick: 'pickBack', return: 'returnBack' }
+};
+
+// 額外照片對應
+const otherPhotoMappings = {
+    pick: ['pickOther1', 'pickOther2', 'pickOther3', 'pickOther4', 'pickOther5', 
+           'pickOther6', 'pickOther7', 'pickOther8', 'pickOther9'],
+    return: ['returnOther1', 'returnOther2', 'returnOther3', 'returnOther4', 'returnOther5',
+             'returnOther6', 'returnOther7', 'returnOther8', 'returnOther9']
+};
+
+// 基本照片位置陣列
+const photoPositions = [
+    '車頭照片',
+    '左前照片',
+    '右前照片',
+    '左後照片',
+    '右後照片',
+    '車尾照片'
+];
+
+// 建立單個照片欄位
+function createPhotoColumn(label, elementId, type) {
+    const col = document.createElement('div');
+    col.className = 'col-md-4 col-sm-6 mb-3';
+    
+    // 為其他照片添加額外的 class，用於控制顯示/隱藏
+    if (label.includes('其他照片')) {
+        col.classList.add('other-photo');
+        col.style.display = 'none'; // 預設隱藏
+    }
+
+    const card = document.createElement('div');
+    card.className = 'card';
+
+    const cardBody = document.createElement('div');
+    cardBody.className = 'card-body p-2';
+
+    const imgContainer = document.createElement('div');
+    imgContainer.className = 'position-relative';
+
+    const img = document.createElement('img');
+    img.id = elementId;
+    img.alt = label;
+    img.className = 'img-fluid';
+    img.style.width = '100%';
+    img.style.height = '400px';
+    img.style.objectFit = 'cover';
+
+    setDefaultImage(img);
+
+    const labelDiv = document.createElement('div');
+    labelDiv.className = 'position-absolute bottom-0 start-0 w-100 bg-dark bg-opacity-50 text-white p-2';
+    labelDiv.style.textAlign = 'center';
+    labelDiv.textContent = label;
+
+    imgContainer.appendChild(img);
+    imgContainer.appendChild(labelDiv);
+    cardBody.appendChild(imgContainer);
+    card.appendChild(cardBody);
+    col.appendChild(card);
+
+    return col;
+}
+
+// 建立照片網格
+function createPhotoGrid(containerId, type) {
+    if (!type) {
+        console.error('未提供照片類型(type)參數');
+        return;
+    }
+
+    const containerElement = document.getElementById(containerId);
+    if (!containerElement) {
+        console.error(`找不到容器: ${containerId}`);
+        return;
+    }
+
+    let rowElement = containerElement.querySelector('.row');
+    if (!rowElement) {
+        rowElement = document.createElement('div');
+        rowElement.className = 'row';
+        containerElement.appendChild(rowElement);
+    }
+
+    rowElement.innerHTML = '';
+
+    try {
+        // 建立基本照片網格
+        photoPositions.forEach((position, index) => {
+            const col = createPhotoColumn(position, `${type}Photo${index}`, type);
+            rowElement.appendChild(col);
+        });
+
+        // 建立展開/收合按鈕
+        const buttonCol = document.createElement('div');
+        buttonCol.className = 'col-12 mb-3 text-center';
+        
+        const toggleButton = document.createElement('button');
+        toggleButton.className = 'btn btn-outline-primary';
+        toggleButton.textContent = '顯示其他照片';
+        toggleButton.onclick = function() {
+            const otherPhotos = containerElement.querySelectorAll('.other-photo');
+            const isHidden = otherPhotos[0].style.display === 'none';
+            
+            otherPhotos.forEach(photo => {
+                photo.style.display = isHidden ? '' : 'none';
+            });
+            
+            this.textContent = isHidden ? '收起其他照片' : '顯示其他照片';
+        };
+        
+        buttonCol.appendChild(toggleButton);
+        rowElement.appendChild(buttonCol);
+
+        // 建立其他照片網格
+        otherPhotoMappings[type].forEach((_, index) => {
+            const col = createPhotoColumn(`其他照片 ${index + 1}`, `${type}OtherPhoto${index}`, type);
+            rowElement.appendChild(col);
+        });
+    } catch (error) {
+        console.error('建立照片網格時發生錯誤:', error);
+    }
+}
+
+// 從 API 取得縮圖 URL
+async function getThumbnailUrl(filename, photoId) {
+    if (!filename) return null;
+    
+    try {
+        const jsonStringFromLocalStorage = localStorage.getItem("userData");
+        if (!jsonStringFromLocalStorage) {
+            console.error('找不到使用者資料');
+            return null;
+        }
+
+        const gertuserData = JSON.parse(jsonStringFromLocalStorage);
+        const user_token = gertuserData.token;
+        
+        const action = "getCompressionPhoto";
+        const source = "HBEVBACKEND";
+        const chsmtoGetphoto = action + source + "HBEVGetFileBApi";
+        const chsm = CryptoJS.MD5(chsmtoGetphoto).toString().toLowerCase();
+
+        const response = await $.ajax({
+            type: "POST",
+            url: `${apiURL}/getFile`,
+            headers: { Authorization: "Bearer " + user_token },
+            data: {
+                action: action,
+                source: source,
+                chsm: chsm,
+                fileParameter: photoId,
+                fileName: filename
+            },
+        });
+        
+        if (response.returnCode === "1" && response.returnData) {
+            return response.returnData[0].photo;
+        }
+        
+        console.error("獲取縮略圖失敗:", response);
+        return null;
+    } catch (error) {
+        console.error("獲取縮略圖時發生錯誤:", error);
+        return null;
+    }
+}
+
+// 處理單張照片
+function handlePhoto(photoId, photoUrl) {
+    const element = document.getElementById(photoId);
+    if (!element) {
+        console.error(`找不到照片元素: ${photoId}`);
+        return;
+    }
+
+    // 從 photoId 提取 'pickPhoto' 或 'returnPhoto'
+    const type = photoId.startsWith('pick') ? 'pickPhoto' : 'returnPhoto';
+    
+    if (photoUrl) {
+        console.log('處理照片:', {
+            photoId,
+            type,
+            photoUrl
+        });
+        
+        getThumbnailUrl(photoUrl, type)  // 傳入 'pickPhoto' 或 'returnPhoto'
+            .then(photo => {
+                if (photo) {
+                    element.src = photo;
+                    element.onerror = () => setDefaultImage(element);
+                } else {
+                    setDefaultImage(element);
+                }
+            })
+            .catch(error => {
+                console.error(`載入照片失敗: ${photoId}`, error);
+                setDefaultImage(element);
+            });
+    } else {
+        setDefaultImage(element);
+    }
+}
+
+// 載入所有照片
+function loadPhotos(photoData, type) {
+    if (!photoData || !photoData[0]) {
+        console.warn('沒有照片資料可載入');
+        return;
+    }
+    
+    try {
+        console.log(`載入 ${type} 照片`);
+        
+        // 載入基本照片
+        photoPositions.forEach((position, index) => {
+            const photoKey = photoMappings[position][type];
+            const photoUrl = photoData[0][photoKey];
+            const elementId = `${type}Photo${index}`;
+            
+            handlePhoto(elementId, photoUrl);
+        });
+
+        // 載入其他照片
+        otherPhotoMappings[type].forEach((photoKey, index) => {
+            const photoUrl = photoData[0][photoKey];
+            const elementId = `${type}OtherPhoto${index}`;
+            
+            handlePhoto(elementId, photoUrl);
+        });
+    } catch (error) {
+        console.error('載入照片時發生錯誤:', error);
+    }
+}
+
+// 設定預設圖片
+function setDefaultImage(imgElement) {
+    const defaultSvg = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+            <rect width="100" height="100" fill="#f0f0f0"/>
+            <text x="50%" y="50%" font-family="Arial, sans-serif" font-size="14" fill="#999" text-anchor="middle" dy=".3em">No Image</text>
+        </svg>
+    `;
+    
+    imgElement.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(defaultSvg);
+}
+
+// 初始化所有照片
+function initializePhotos(returnPhotoData) {
+    try {
+        // 建立照片網格
+        createPhotoGrid('pickupPhotoGrid', 'pick');
+        createPhotoGrid('returnPhotoGrid', 'return');
+
+        // 載入照片
+        if (returnPhotoData && returnPhotoData.length > 0) {
+            loadPhotos(returnPhotoData, 'pick');
+            loadPhotos(returnPhotoData, 'return');
+        }
+    } catch (error) {
+        console.error('初始化照片時發生錯誤:', error);
+    }
+}
+
 $(document).ready(function () {
     handlePageReadPermissions(currentUser, currentUrl);
 
@@ -112,6 +384,13 @@ $(document).ready(function () {
                 $("#realReturnSiteName").val(PickData.realReturnSiteName);
                 $("#returnSiteName").val(PickData.returnSiteName);
 
+                if (responseData.returnPhotoData) {
+                    console.log('發現照片資料:', responseData.returnPhotoData); // 新增
+                    initializePhotos(responseData.returnPhotoData);
+                } else {
+                    console.log('沒有照片資料'); // 新增
+                }        
+
                 updatePageWithData(responseData.returnFeeData, orderDetailTable);
                 updatePageWithData(responseData.returnInvoiceData, invoiceTable);
 
@@ -125,6 +404,60 @@ $(document).ready(function () {
             showErrorNotification();
         },
     });
+
+    $("#ordereditButton").on("click", function() {
+        updateOrderRemark();
+    });
+
+    function updateOrderRemark() {
+        // Get the order number and remark
+        const orderNo = $("#orderId").val();
+        const orderRemark = $("#orderRemark").val();
+
+        // Get user token from localStorage
+        const jsonStringFromLocalStorage = localStorage.getItem("userData");
+        const gertuserData = JSON.parse(jsonStringFromLocalStorage);
+        const user_token = gertuserData.token;
+
+        // Prepare API parameters
+        const action = "updateOrderDetail";
+        const source = "HBEVBACKEND";
+        const chsmToUpdate = action + source + "HBEVOrderBApi";
+        const chsm = CryptoJS.MD5(chsmToUpdate).toString().toLowerCase();
+
+        // Prepare the data object
+        const data = JSON.stringify({
+            orderNo: orderNo,
+            remark: orderRemark
+        });
+
+        // Make the API call
+        $.ajax({
+            type: "POST",
+            url: `${apiURL}/order`,
+            headers: { Authorization: "Bearer " + user_token },
+            data: {
+                action: action,
+                source: source,
+                chsm: chsm,
+                data: data
+            },
+            success: function(response) {
+                if (response.returnCode === "1") {
+                    toastr.success(response.returnMessage);
+                    setTimeout(function() {
+                        window.location.href = "orderList.html";
+                    }, 1000);
+                } else {
+                    toastr.error("更新失敗：" + response.returnMessage);
+                }
+            },
+            error: function(error) {
+                toastr.error("發生錯誤，請稍後再試");
+            }
+        });
+    }
+    
 
     // Cancel order button click event
     $('button[data-bs-target="#cancelOrderModal"]').on('click', function(e) {
@@ -213,7 +546,6 @@ $(document).ready(function () {
                     setTimeout(function() {
                         location.reload();
                     }, 1000);
-                    // location.reload();
                 } else {
                     toastr.error("取消訂單失敗：" + response.returnMessage);
                 }

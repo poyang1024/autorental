@@ -9,6 +9,7 @@ $(document).ready(function () {
 
 	if (!userAuth.includes("update")) {
 		$("#orderAppealModalBtn").remove();
+		$("#ordereditButton").remove();
 	}
 
 	if (!userAuth.includes("orderCancel")) {
