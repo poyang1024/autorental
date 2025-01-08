@@ -42,6 +42,7 @@ $(document).ready(function () {
                 $("#Mem-mobileCarrier").val(memberData.mobileCarrier);
                 $("#Mem-invoiceTitle").val(memberData.invoiceTitle);
                 $("#Mem-taxID").val(memberData.taxID);
+                $("#Mem-address").val(memberData.address);
                 $("#Mem-levelId").val(memberData.levelId);
                 $("#Mem-totalMileage").val(memberData.totalMileage);
                 $("#Mem-verifyStatus").val(memberData.verifyStatus);

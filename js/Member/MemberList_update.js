@@ -71,6 +71,7 @@ function populateMemberDetails(memberData) {
     $("#Mem-birthDay").val(formatDateForInput(memberData.birthDay));
     $("#Mem-email").val(memberData.email);
     $("#Mem-phone").val(memberData.phone);
+    $("#Mem-address").val(memberData.address);
     $("#Mem-remark").val(memberData.remark);
     $("#Mem-donationUnit").val(memberData.donationUnit);
     $("#Mem-invoiceEmail").val(memberData.invoiceEmail);
@@ -284,6 +285,7 @@ function setupUpdateMember(memberId) {
                 birthDay: $("#Mem-birthDay").val(),
                 email: $("#Mem-email").val(),
                 phone: $("#Mem-phone").val(),
+                address: $("#Mem-address").val(),
                 remark: $("#Mem-remark").val(),
                 invoiceType: $("#Mem-invoiceType").val(),
                 donationUnit: $("#Mem-donationUnit").val(),
