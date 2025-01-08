@@ -245,7 +245,8 @@ function updatePageWithData(responseData) {
             { data: "exceedTimeFee" },
             { data: "freeMileage" },
             { data: "exceedMileageFee" },
-            { data: "statusName" }
+            { data: "statusName" },
+            { data: "salesplanOrder" }
         ],
         drawCallback: function () {
             handlePagePermissions(currentUser, currentUrl);

@@ -59,7 +59,8 @@ function populateSalesPlanDataDetails(salesPlanData) {
     $("#S-freeMileage").val(salesPlanData.freeMileage);
     $("#S-exceedMileageFee").val(salesPlanData.exceedMileageFee);
     
-    $("#A-status").val(salesPlanData.status);
+    $("#S-status").val(salesPlanData.status);
+    $("#S-salesplanOrder").val(salesPlanData.salesplanOrder);
 
     $("#BuildTime").val(salesPlanData.createTime);
     $("#EditTime").val(salesPlanData.updateTime);

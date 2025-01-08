@@ -132,7 +132,8 @@ function populateSalesPlanDataDetails(salesPlanData) {
     $("#S-freeMileage").val(salesPlanData.freeMileage);
     $("#S-exceedMileageFee").val(salesPlanData.exceedMileageFee);
     
-    $("#A-status").val(salesPlanData.status);
+    $("#S-status").val(salesPlanData.status);
+    $("#S-salesplanOrder").val(salesPlanData.salesplanOrder);
 
     $("#BuildTime").val(salesPlanData.createTime);
     $("#EditTime").val(salesPlanData.updateTime);
@@ -216,7 +217,8 @@ function setupUpdateSalesPlan() {
                     exceedTimeFee: $("#S-exceedTimeFee").val(),
                     freeMileage: $("#S-freeMileage").val(),
                     exceedMileageFee: $("#S-exceedMileageFee").val(),
-                    status: $("#S-status").val()
+                    status: $("#S-status").val(),
+                    salesplanOrder: $("#S-salesplanOrder").val(),
                 };
 
                 const formData = new FormData();

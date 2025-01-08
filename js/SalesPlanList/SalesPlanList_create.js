@@ -137,7 +137,8 @@ function createSalesPlan() {
 				exceedTimeFee: $("#S-exceedTimeFee").val(),
                 freeMileage: $("#S-freeMileage").val(),
                 exceedMileageFee: $("#S-exceedMileageFee").val(),
-				status: $("#S-status").val()
+				status: $("#S-status").val(),
+                salesplanOrder: $("#S-salesplanOrder").val()
 			};
 
 			const formData = new FormData();
