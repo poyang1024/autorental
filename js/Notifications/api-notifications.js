@@ -16,7 +16,7 @@ function handleApiResponse(apiResponse) {
             localStorage.clear();
 			sessionStorage.clear();
             setTimeout(function() {
-			// 获取当前 URL 并检查倒数第二个部分是否是 html
+			// 拿目前 URL 並檢查到數第二個部分是不是 html
 			let currentPath = window.location.pathname;
 			if (currentPath.charAt(0) === "/") {
 				currentPath = currentPath.slice(1);
@@ -25,7 +25,7 @@ function handleApiResponse(apiResponse) {
 			const pathParts = currentPath.split("/");
 			const secondLastPart = pathParts[pathParts.length - 2];
 
-			// 判断倒数第二个部分是否是 html
+			// 判斷倒數第二個部分是否是 html
 			const isHtmlDirectory = secondLastPart === "html";
 
 			const subMenuItem = document.createElement("a");
