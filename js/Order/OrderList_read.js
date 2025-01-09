@@ -389,6 +389,7 @@ $(document).ready(function () {
                     initializePhotos(responseData.returnPhotoData);
                 } else {
                     console.log('沒有照片資料'); // 新增
+                    initializePhotos(responseData.returnPhotoData);
                 }        
 
                 updatePageWithData(responseData.returnFeeData, orderDetailTable);
