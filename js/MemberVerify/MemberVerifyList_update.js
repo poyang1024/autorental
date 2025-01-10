@@ -303,7 +303,7 @@ function populateMemberVerifyDetails(memberVerifyData,verifyRecordData) {
     handlePhoto("#selfie", memberVerifyData.selfie);
 
     // 處理其他照片
-    if (memberVerifyData.otherPhotoData != 'null' || memberVerifyData.otherPhotoData != null) {
+    if (memberVerifyData.otherPhotoData != 'null') {
         const otherPhotos = JSON.parse(memberVerifyData.otherPhotoData);
         const container = $("#memberVerifyPhotoContainer");
         

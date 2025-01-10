@@ -57,12 +57,13 @@ $(document).ready(function () {
                 handlePhoto("#drivingLicenseBack", memberVerifyData.drivingLicenseBack);
                 handlePhoto("#selfie", memberVerifyData.selfie);
 
-                if (memberVerifyData.otherPhotoData != 'null' || memberVerifyData.otherPhotoData != null) {
+                if (memberVerifyData.otherPhotoData != 'null') {
                     const otherPhotos = JSON.parse(memberVerifyData.otherPhotoData);
                     const container = $("#memberVerifyPhotoContainer");
                     
                     // 新增展開/收合按鈕
                     const toggleButton = `
+                    <hr class="my-4">
                         <div class="col-12 mb-3">
                             <button type="button" class="btn btn-secondary" id="toggleOtherPhotos">
                                 <i class="fas fa-chevron-down"></i> 顯示其他照片
