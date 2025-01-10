@@ -57,6 +57,60 @@ $(document).ready(function () {
                 handlePhoto("#drivingLicenseBack", memberVerifyData.drivingLicenseBack);
                 handlePhoto("#selfie", memberVerifyData.selfie);
 
+                if (memberVerifyData.otherPhotoData != 'null' || memberVerifyData.otherPhotoData != null) {
+                    const otherPhotos = JSON.parse(memberVerifyData.otherPhotoData);
+                    const container = $("#memberVerifyPhotoContainer");
+                    
+                    // 新增展開/收合按鈕
+                    const toggleButton = `
+                        <div class="col-12 mb-3">
+                            <button type="button" class="btn btn-secondary" id="toggleOtherPhotos">
+                                <i class="fas fa-chevron-down"></i> 顯示其他照片
+                            </button>
+                        </div>
+                        <div id="otherPhotosContainer" class="row" style="display: none;">
+                        </div>
+                    `;
+                    container.append(toggleButton);
+                    
+                    // 新增照片到容器中
+                    const photosContainer = $("#otherPhotosContainer");
+                    otherPhotos.forEach((photo, index) => {
+                        const photoHtml = `
+                            <div class="col-sm-6 mb-3">
+                                <label class="form-label">${photo.memberFileRemark}</label>
+                                <div class="card" style="max-width: 300px; margin: auto;">
+                                    <img id="otherPhoto_${index}" class="card-img-top" alt="${photo.memberFileRemark}" style="max-width: 100%; height: auto;">
+                                </div>
+                            </div>
+                        `;
+                        photosContainer.append(photoHtml);
+                        
+                        getThumbnailUrl(photo.memberFile, `userPhoto`).then(photoData => {
+                            if (photoData) {
+                                $(`#otherPhoto_${index}`).attr("src", photoData);
+                            } else {
+                                setDefaultImage($(`#otherPhoto_${index}`));
+                            }
+                        });
+                    });
+            
+                    // 綁定切換按鈕事件
+                    $("#toggleOtherPhotos").on("click", function() {
+                        const container = $("#otherPhotosContainer");
+                        const icon = $(this).find("i");
+                        if (container.is(":visible")) {
+                            container.slideUp();
+                            icon.removeClass("fa-chevron-up").addClass("fa-chevron-down");
+                            $(this).html('<i class="fas fa-chevron-down"></i> 顯示其他照片');
+                        } else {
+                            container.slideDown();
+                            icon.removeClass("fa-chevron-down").addClass("fa-chevron-up");
+                            $(this).html('<i class="fas fa-chevron-up"></i> 隱藏其他照片');
+                        }
+                    });
+                }
+
                 $("#spinner").hide();
             } else {
                 handleApiResponse(responseData);
