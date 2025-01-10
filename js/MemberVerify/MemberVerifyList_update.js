@@ -1,3 +1,6 @@
+// 初始化計數器
+let memberFileCounter = 0;
+
 $(document).ready(async function () {
     handlePageUpdatePermissions(currentUser, currentUrl);
     try {
@@ -22,7 +25,199 @@ $(document).ready(async function () {
         e.preventDefault(); // Prevent the default anchor behavior
         getOrderList();
     });
+
+    $("#addMemberFileBtn").on("click", addMemberFileField);
+    $("#uploadAllFilesBtn").on("click", uploadAllMemberFiles);
 });
+
+// Format date for date input
+function formatDateForInput(dateString) {
+    if (!dateString || dateString === "0000-00-00" || dateString === "0000-00-00 00:00:00") {
+        return "";
+    }
+    // Assuming dateString is in format "YYYY-MM-DD" or "YYYY-MM-DD HH:mm:ss"
+    return dateString.split(' ')[0]; // This will return just the date part
+}
+
+// Format date and time for display
+function formatDateTime(dateTimeString) {
+    if (!dateTimeString || dateTimeString === "0000-00-00" || dateTimeString === "0000-00-00 00:00:00") {
+        return "";
+    }
+    // Assuming dateTimeString is in format "YYYY-MM-DD HH:mm:ss"
+    const date = new Date(dateTimeString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
+
+function addMemberFileField() {
+    const fieldId = `memberFile_${memberFileCounter}`;
+    const html = `
+        <div class="col-12 member-file-group" id="${fieldId}_container">
+            <div class="card p-3 mb-3">
+                <div class="row">
+                    <div class="col-md-3">
+                        <label for="${fieldId}" class="form-label">會員檔案</label>
+                        <input type="file" 
+                               class="form-control member-file-input" 
+                               id="${fieldId}" 
+                               name="memberFile"
+                               accept=".jpg,.jpeg,.png">
+                        <small class="text-muted">僅支援 JPG、JPEG、PNG 格式</small>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="${fieldId}_remark" class="form-label">檔案備註</label>
+                        <input type="text" class="form-control member-file-remark" id="${fieldId}_remark" placeholder="請輸入檔案備註">
+                    </div>
+                    <div class="col-md-3">
+                        <div class="preview-container" style="max-width: 200px; max-height: 200px; overflow: hidden;">
+                            <img id="${fieldId}_preview" class="img-fluid" style="display: none;">
+                        </div>
+                    </div>
+                    <div class="col-md-3 d-flex align-items-center">
+                        <button type="button" class="btn btn-danger w-100" onclick="removeMemberFileField('${fieldId}_container')">
+                            刪除
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    $("#memberFileContainer").append(html);
+    
+    // 檔案預覽
+    $(`#${fieldId}`).on('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            if (!file.type.match('image.*')) {
+                toastr.warning('請上傳圖片檔案');
+                this.value = '';
+                return;
+            }
+            
+            if (file.size > 5 * 1024 * 1024) {
+                toastr.warning('檔案大小不能超過 5MB');
+                this.value = '';
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                $(`#${fieldId}_preview`).attr('src', e.target.result).show();
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+    
+    memberFileCounter++;
+}
+
+// 移除會員檔案欄位
+function removeMemberFileField(containerId) {
+    $(`#${containerId}`).remove();
+}
+
+// 批量上傳所有檔案
+async function uploadAllMemberFiles() {
+    const fileGroups = $('.member-file-group');
+    let hasError = false;
+
+    // 檢查是否有檔案要上傳
+    if (fileGroups.length === 0) {
+        toastr.warning('請先新增檔案欄位');
+        return;
+    }
+
+    // 檢查所有欄位是否都已填寫
+    for (let group of fileGroups) {
+        const fileInput = $(group).find('.member-file-input')[0];
+        const remark = $(group).find('.member-file-remark').val();
+        
+        if (!fileInput.files[0]) {
+            toastr.warning('請確認所有檔案都已選擇');
+            return;
+        }
+        if (!remark) {
+            toastr.warning('請確認所有備註都已填寫');
+            return;
+        }
+    }
+
+    // 開始上傳
+    $("#uploadAllFilesBtn").prop('disabled', true);
+    toastr.info('檔案上傳中，請稍候...');
+
+    try {
+        for (let group of fileGroups) {
+            const fileInput = $(group).find('.member-file-input')[0];
+            const fileremark = $(group).find('.member-file-remark').val();
+            
+            await uploadMemberFile(fileInput.files[0], fileremark);
+            $(group).find('input, button').prop('disabled', true);
+        }
+        toastr.success('所有檔案上傳成功');
+        setTimeout(() => {
+            window.location.href = "memberVerifyList.html";
+        }, 1000);
+    } catch (error) {
+        toastr.error(error);
+        hasError = true;
+    } finally {
+        $("#uploadAllFilesBtn").prop('disabled', false);
+    }
+}
+
+async function uploadMemberFile(file, fileremark) {
+    const userData = JSON.parse(localStorage.getItem("userData"));
+    if (!userData || !userData.token) {
+        throw new Error("用戶數據或令牌缺失");
+    }
+
+    const memberVerifyId = sessionStorage.getItem("updateMemberVerifyId");
+        if (!memberVerifyId) {
+            throw new Error("sessionStorage 中缺少 updateMemberId");
+        }
+
+    const formData = new FormData();
+    formData.append("action", "uploadFile");
+    formData.append("source", "HBEVBACKEND");
+    formData.append("chsm", CryptoJS.MD5("uploadFile" + "HBEVBACKEND" + "HBEVMemberBApi").toString().toLowerCase());
+    formData.append("memberFile", file);
+    
+    const data = {
+        id: memberVerifyId,
+        memberFileRemark: fileremark
+    };
+    formData.append("data", JSON.stringify(data));
+
+    try {
+        const response = await $.ajax({
+            type: "POST",
+            url: `${apiURL}/member`,
+            headers: { 
+                Authorization: "Bearer " + userData.token
+            },
+            data: formData,
+            processData: false,
+            contentType: false
+        });
+
+        if (response.returnCode === "1") {
+            return response.returnData;
+        }
+        else {
+            handleApiResponse(response);
+        }
+    }catch (error) {
+            showErrorNotification();
+    }
+}
 
 async function initializeUpdateMemberVerifyForm() {
     try {
@@ -106,6 +301,61 @@ function populateMemberVerifyDetails(memberVerifyData,verifyRecordData) {
     handlePhoto("#drivingLicenseFront", memberVerifyData.drivingLicenseFront);
     handlePhoto("#drivingLicenseBack", memberVerifyData.drivingLicenseBack);
     handlePhoto("#selfie", memberVerifyData.selfie);
+
+    // 處理其他照片
+    if (memberVerifyData.otherPhotoData != 'null' || memberVerifyData.otherPhotoData != null) {
+        const otherPhotos = JSON.parse(memberVerifyData.otherPhotoData);
+        const container = $("#memberVerifyPhotoContainer");
+        
+        // 新增展開/收合按鈕
+        const toggleButton = `
+            <div class="col-12 mb-3">
+                <button type="button" class="btn btn-secondary" id="toggleOtherPhotos">
+                    <i class="fas fa-chevron-down"></i> 顯示其他照片
+                </button>
+            </div>
+            <div id="otherPhotosContainer" class="row" style="display: none;">
+            </div>
+        `;
+        container.append(toggleButton);
+        
+        // 新增照片到容器中
+        const photosContainer = $("#otherPhotosContainer");
+        otherPhotos.forEach((photo, index) => {
+            const photoHtml = `
+                <div class="col-sm-6 mb-3">
+                    <label class="form-label">${photo.memberFileRemark}</label>
+                    <div class="card" style="max-width: 300px; margin: auto;">
+                        <img id="otherPhoto_${index}" class="card-img-top" alt="${photo.memberFileRemark}" style="max-width: 100%; height: auto;">
+                    </div>
+                </div>
+            `;
+            photosContainer.append(photoHtml);
+            
+            getThumbnailUrl(photo.memberFile, `userPhoto`).then(photoData => {
+                if (photoData) {
+                    $(`#otherPhoto_${index}`).attr("src", photoData);
+                } else {
+                    setDefaultImage($(`#otherPhoto_${index}`));
+                }
+            });
+        });
+
+        // 綁定切換按鈕事件
+        $("#toggleOtherPhotos").on("click", function() {
+            const container = $("#otherPhotosContainer");
+            const icon = $(this).find("i");
+            if (container.is(":visible")) {
+                container.slideUp();
+                icon.removeClass("fa-chevron-up").addClass("fa-chevron-down");
+                $(this).html('<i class="fas fa-chevron-down"></i> 顯示其他照片');
+            } else {
+                container.slideDown();
+                icon.removeClass("fa-chevron-down").addClass("fa-chevron-up");
+                $(this).html('<i class="fas fa-chevron-up"></i> 隱藏其他照片');
+            }
+        });
+    }
 }
 
 async function getThumbnailUrl(filename, photoId) {
@@ -193,31 +443,6 @@ function setDefaultImage(imgElement) {
             'max-width': '100%',
             'height': 'auto'
         });
-}
-
-// Format date for date input
-function formatDateForInput(dateString) {
-    if (!dateString || dateString === "0000-00-00" || dateString === "0000-00-00 00:00:00") {
-        return "";
-    }
-    // Assuming dateString is in format "YYYY-MM-DD" or "YYYY-MM-DD HH:mm:ss"
-    return dateString.split(' ')[0]; // This will return just the date part
-}
-
-// Format date and time for display
-function formatDateTime(dateTimeString) {
-    if (!dateTimeString || dateTimeString === "0000-00-00" || dateTimeString === "0000-00-00 00:00:00") {
-        return "";
-    }
-    // Assuming dateTimeString is in format "YYYY-MM-DD HH:mm:ss"
-    const date = new Date(dateTimeString);
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
-    const seconds = String(date.getSeconds()).padStart(2, '0');
-    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
 
 function setupUpdateMemberVerify(memberVerifyId) {
