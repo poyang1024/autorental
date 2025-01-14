@@ -1,11 +1,14 @@
 // 照片位置對應
 const photoMappings = {
     '車頭照片': { pick: 'pickFront', return: 'returnFront' },
+    '左邊照片': { pick: 'pickLeft', return: 'returnLeft' },
+    '右邊照片': { pick: 'pickRight', return: 'returnRight' },
     '左前照片': { pick: 'pickLeftFront', return: 'returnLeftFront' },
     '右前照片': { pick: 'pickRightFront', return: 'returnRightFront' },
     '左後照片': { pick: 'pickLeftBack', return: 'returnLeftBack' },
     '右後照片': { pick: 'pickRightBack', return: 'returnRightBack' },
-    '車尾照片': { pick: 'pickBack', return: 'returnBack' }
+    '車尾照片': { pick: 'pickBack', return: 'returnBack' },
+    '上面照片': { pick: 'pickTop', return: 'returnTop' },
 };
 
 // 額外照片對應
@@ -19,11 +22,14 @@ const otherPhotoMappings = {
 // 基本照片位置陣列
 const photoPositions = [
     '車頭照片',
+    '左邊照片',
+    '右邊照片',
     '左前照片',
     '右前照片',
     '左後照片',
     '右後照片',
-    '車尾照片'
+    '車尾照片',
+    '上面照片',
 ];
 
 // 建立單個照片欄位
