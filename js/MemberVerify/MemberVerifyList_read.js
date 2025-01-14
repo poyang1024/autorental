@@ -38,6 +38,7 @@ $(document).ready(function () {
                 $("#MemV-email").val(memberVerifyData.email);
                 $("#MemV-phone").val(memberVerifyData.phone);
                 $("#MemV-remark").val(memberVerifyData.remark);
+                $("#MemV-address").val(memberVerifyData.address);
 
                 // 處理 verifyRecord
                 let verifyRecordText = "";

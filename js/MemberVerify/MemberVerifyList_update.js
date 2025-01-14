@@ -282,6 +282,7 @@ function populateMemberVerifyDetails(memberVerifyData,verifyRecordData) {
     $("#MemV-phone").val(memberVerifyData.phone);
     $("#MemV-remark").val(memberVerifyData.remark);
     $("#Mem-verifyStatus").val(memberVerifyData.verifyStatus);
+    $("#MemV-address").val(memberVerifyData.address);
 
     // 處理 verifyRecord
     let verifyRecordText = "";
@@ -501,6 +502,7 @@ function setupUpdateMemberVerify(memberVerifyId) {
                     phone: $("#MemV-phone").val(),
                     remark: $("#MemV-remark").val(),
                     levelId: $("#MemV-levelId").val(),
+                    address: $("#Memv-address").val(),
                     verifyStatus: verifyStatus,
                     verifyFailureReason: verifyStatus === 2 ? $("#MemV-failReason").val() : ""
                 };
