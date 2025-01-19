@@ -80,7 +80,7 @@ $(document).ready(function () {
                     otherPhotos.forEach((photo, index) => {
                         const photoHtml = `
                             <div class="col-sm-6 mb-3">
-                                <label class="form-label">${photo.memberFileRemark}</label>
+                                <label class="form-label" ${!photo.memberFileRemark ? 'style="color: red; font-weight: bold;"' : ''}>${photo.memberFileRemark || '此照片無備註'}</label>
                                 <div class="card" style="max-width: 300px; margin: auto;">
                                     <img id="otherPhoto_${index}" class="card-img-top" alt="${photo.memberFileRemark}" style="max-width: 100%; height: auto;">
                                 </div>

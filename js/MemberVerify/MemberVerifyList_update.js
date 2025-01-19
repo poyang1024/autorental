@@ -143,10 +143,11 @@ async function uploadAllMemberFiles() {
             toastr.warning('請確認所有檔案都已選擇');
             return;
         }
-        if (!remark) {
-            toastr.warning('請確認所有備註都已填寫');
-            return;
-        }
+        // 因需求檔案備註可以不用必填，所以先註解掉
+        // if (!remark) {
+        //     toastr.warning('請確認所有備註都已填寫');
+        //     return;
+        // }
     }
 
     // 開始上傳
@@ -162,8 +163,10 @@ async function uploadAllMemberFiles() {
             $(group).find('input, button').prop('disabled', true);
         }
         toastr.success('所有檔案上傳成功');
+        
+        // 設定一個短暫延遲後重新載入頁面，讓 toastr 訊息有時間顯示
         setTimeout(() => {
-            window.location.href = "memberVerifyList.html";
+            window.location.reload();
         }, 1000);
     } catch (error) {
         toastr.error(error);
@@ -325,7 +328,7 @@ function populateMemberVerifyDetails(memberVerifyData,verifyRecordData) {
         otherPhotos.forEach((photo, index) => {
             const photoHtml = `
                 <div class="col-sm-6 mb-3">
-                    <label class="form-label">${photo.memberFileRemark}</label>
+                    <label class="form-label" ${!photo.memberFileRemark ? 'style="color: red; font-weight: bold;"' : ''}>${photo.memberFileRemark || '此照片無備註'}</label>
                     <div class="card" style="max-width: 300px; margin: auto;">
                         <img id="otherPhoto_${index}" class="card-img-top" alt="${photo.memberFileRemark}" style="max-width: 100%; height: auto;">
                     </div>
