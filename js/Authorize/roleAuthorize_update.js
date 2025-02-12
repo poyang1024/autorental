@@ -600,6 +600,52 @@ $(document).ready(function () {
 		return a.id - b.id;
 	});
 
+	//Data9
+	var columnsData9 = [
+		{ data: "empty", title: "#" },
+		{ data: "read", title: "查看詳情" },
+		{ data: "insert", title: "新增" },
+		{ data: "update", title: "修改" },
+		{ data: "delete", title: "刪除" },
+	];
+
+	var columns9 = [];
+
+	columnsData9.forEach(function (column) {
+		columns9.push({ data: column.data, title: column.title });
+	});
+
+	var table9Data = [
+		{
+			empty: "報表管理",
+			id: 39,
+			read: '<input type="checkbox" name="rowCheckbox" data-id="39" data-column="read"/>',
+			insert: '<span></span>',
+			update: '<span></span>',
+			delete: '<span></span>',
+			// insert: '<input type="checkbox" name="rowCheckbox" data-id="39" data-column="insert" />',
+			// update: '<input type="checkbox" name="rowCheckbox" data-id="39" data-column="update" />',
+			// delete: '<input type="checkbox" name="rowCheckbox" data-id="39" data-column="delete" disabled/>',
+		},
+		{
+			empty: "訂單報表",
+			id: 40,
+			read: '<input type="checkbox" name="rowCheckbox" data-id="40" data-column="read"/>',
+			insert: '<span></span>',
+			update: '<span></span>',
+			delete: '<span></span>',
+		},
+	];
+
+	var table9DataArray = Object.values(table9Data);
+	table9DataArray.forEach(function (row) {
+		row.id = parseInt(row.id);
+	});
+
+	table9DataArray.sort(function (a, b) {
+		return a.id - b.id;
+	});
+
 	// 初始化表格
 	var table1 = $("#authorize-management-1").DataTable({
 		data: table1DataArray,
@@ -721,6 +767,21 @@ $(document).ready(function () {
 
 	table8.clear().rows.add(table8DataArray).draw();
 
+	var table9 = $("#authorize-management-9").DataTable({
+		data: table9DataArray,
+		columns: columns9,
+		paging: false,
+		searching: false,
+		scrollX: false,
+		info: false,
+		order: [
+			[2, "desc"],
+			[2, "asc"],
+		],
+	});
+
+	table9.clear().rows.add(table9DataArray).draw();
+
 });
 
 //詳細內容
@@ -775,7 +836,7 @@ $(document).ready(function () {
 					console.log("menuAuthorize is undefined");
 				}
 				// 表格标识符数组
-				var tableIds = [1, 2, 3, 4, 5, 6, 7, 8];
+				var tableIds = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 				// 使用循环为不同的表格填充复选框
 				for (var i = 0; i < tableIds.length; i++) {
 					fillCheckboxes(originalMenuAuthorizeData, tableIds[i]);
