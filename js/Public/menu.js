@@ -32,6 +32,7 @@ function generateMenu(data, parentId) {
 		會員管理: "fas fa-id-card me-2",
 		優惠管理: "fas fa-bullhorn me-2",
 		訂單管理: "fas fa-edit me-2",
+		報表管理: "fas fa-file-export me-2",
 	};
 
 	parentItems.forEach((parentItem) => {
@@ -49,7 +50,7 @@ function generateMenu(data, parentId) {
 		parentDropdownLink.setAttribute("data-bs-toggle", "dropdown");
 		parentDropdownLink.textContent = parentItem.name;
 
-		const iconClass = titleToIconMap[parentItem.name] || "fa-circle";
+		const iconClass = titleToIconMap[parentItem.name] || "fa-circle me-2";
 
 		const icon = document.createElement("i");
 		icon.className = `fas ${iconClass}`;
@@ -139,6 +140,7 @@ localStorage.setItem("expandedMenu", matchedLinks[0]);
 
 // 在页面加载时应用展开的菜单项状态
 window.addEventListener("load", () => {
+	// console.log(JSON.parse(currentUser).userretrunData); //查看目前登入者的權限
 	// 从localStorage中获取展开的菜单项URL
 	const expandedMenuUrl = localStorage.getItem("expandedMenu");
 	if (expandedMenuUrl) {
