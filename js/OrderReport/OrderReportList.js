@@ -355,11 +355,12 @@ function updatePageWithData(responseData) {
 
 function setupGetOrderReportCsvEventListener() {
     $("#csvBtn").off('click').on("click", async function() {
-        await getOrderReportCsv();
+        var filterData = getFilterData();
+        await getOrderReportCsv(filterData);
     });
 }
 
-async function getOrderReportCsv() {
+async function getOrderReportCsv(filterData = {}) {
     const jsonStringFromLocalStorage = localStorage.getItem("userData");
     const getUserData = JSON.parse(jsonStringFromLocalStorage);
     const user_token = getUserData.token;
@@ -374,6 +375,10 @@ async function getOrderReportCsv() {
         source: source,
         chsm: chsm
     };
+
+    if (Object.keys(filterData).length > 0) {
+        requestData.data = JSON.stringify(filterData);
+    }
 
     try {
         const response = await $.ajax({
