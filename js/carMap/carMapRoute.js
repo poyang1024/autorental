@@ -1,4 +1,3 @@
-
 // 全局變量
 let map;
 let directionsService;
@@ -270,7 +269,8 @@ async function drawOptimizedRouteOnMap(routeData) {
             origin: new google.maps.LatLng(origin.lat, origin.lng),
             destination: new google.maps.LatLng(destination.lat, destination.lng),
             waypoints: waypoints,
-            travelMode: google.maps.TravelMode.TWO_WHEELER
+            travelMode: google.maps.TravelMode.TWO_WHEELER,
+            avoidHighways: true
         };
 
         try {
