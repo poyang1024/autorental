@@ -262,7 +262,8 @@ function updatePageWithData(responseData) {
         columns: [
             {
                 render: function (data, type, row) {
-                    var readButtonHtml = `<a href="orderDetail_read.html" style="display:none; margin-bottom:5px" class="btn btn-warning text-white read-button" data-button-type="read" data-id="${row.orderNo}">查看詳情</a>`;
+                    // 修改按鈕的 href 為包含訂單 ID 的 URL
+                    var readButtonHtml = `<a href="orderDetail_read.html?id=${row.orderNo}" style="display:none; margin-bottom:5px" class="btn btn-warning text-white read-button" data-button-type="read" data-id="${row.orderNo}">查看詳情</a>`;
                     return readButtonHtml;
                 },
             },

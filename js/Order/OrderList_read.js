@@ -283,10 +283,24 @@ $(document).ready(function () {
     // 確保訂單備註可編輯
     $("#orderRemark").prop("disabled", false);
 
-    var readOrderId = sessionStorage.getItem("readOrderId");
+    // 獲取訂單 ID (從 URL 或 sessionStorage)
+    function getOrderId() {
+        // 嘗試從 URL 獲取
+        var urlParams = new URLSearchParams(window.location.search);
+        var id = urlParams.get('id');
+        
+        // 如果 URL 有 ID，則返回
+        if (id) return id;
+        
+        // 否則從 sessionStorage 獲取
+        return sessionStorage.getItem("readOrderId");
+    }
+
+    var readOrderId = getOrderId();
+
     const dataId = { orderNo: readOrderId };
     const IdPost = JSON.stringify(dataId);
-    console.log(IdPost);
+    // console.log(IdPost);
 
     // Parse JSON string from localStorage
     const jsonStringFromLocalStorage = localStorage.getItem("userData");
@@ -296,8 +310,8 @@ $(document).ready(function () {
     // Prepare data for API calls
     var action = "getOrderDetail";
     var source = "HBEVBACKEND";
-    var chsmtoGetHolidayList = action + source + "HBEVOrderBApi";
-    var chsm = CryptoJS.MD5(chsmtoGetHolidayList).toString().toLowerCase();
+    var chsmtoGetOrederList = action + source + "HBEVOrderBApi";
+    var chsm = CryptoJS.MD5(chsmtoGetOrederList).toString().toLowerCase();
 
     // Order details table
     if ($.fn.DataTable.isDataTable('#orderDetailList')) {
@@ -336,6 +350,21 @@ $(document).ready(function () {
         order: [],
     });
 
+    // Change Car ReasonList details table
+    if ($.fn.DataTable.isDataTable('#reasonList')) {
+        $('#reasonList').DataTable().clear().destroy();
+    }
+    var reasonTable = $("#reasonList").DataTable({
+        columns: [
+            { data: "carId" },
+            { data: "changeReason" },
+            { data: "changeAdditionalInfo" },
+        ],
+        drawCallback: function () {
+        },
+        order: [],
+    });
+
     // POST call api method  
     $.ajax({
         type: "POST",
@@ -362,6 +391,9 @@ $(document).ready(function () {
                 $("#orderAmount").val(orderData.deposit);
                 $("#returnFee").val(orderData.returnFee);
                 $("#totalAmount").val(orderData.totalAmount);
+                $("#riddenMileage").val(orderData.riddenMileage);
+                $("#estimateTotalExceedTimeFee").val(orderData.estimateTotalExceedTimeFee);
+                $("#estimateTotalExceedMileageFee").val(orderData.estimateTotalExceedMileageFee);
                 $("#orderStatus").val(orderData.statusName);
                 $("#orderRemark").val(orderData.remark);
 
@@ -392,7 +424,7 @@ $(document).ready(function () {
                 $("#returnSiteName").val(PickData.returnSiteName);
 
                 if (responseData.returnPhotoData) {
-                    console.log('發現照片資料:', responseData.returnPhotoData); // 新增
+                    // console.log('發現照片資料:', responseData.returnPhotoData); // 新增
                     initializePhotos(responseData.returnPhotoData);
                 } else {
                     console.log('沒有照片資料'); // 新增
@@ -401,6 +433,7 @@ $(document).ready(function () {
 
                 updatePageWithData(responseData.returnFeeData, orderDetailTable);
                 updatePageWithData(responseData.returnInvoiceData, invoiceTable);
+                updatePageWithData(responseData.returnChangeCarData, reasonTable);
 
                 // Hide loading spinner
                 $("#spinner").hide();

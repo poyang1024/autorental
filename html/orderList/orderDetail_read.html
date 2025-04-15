@@ -272,7 +272,7 @@
                                     </div>
                                 </div>
                 
-                                <!-- 訂單資訊 (新添加的部分) -->
+                                <!-- 訂單資訊 -->
                                 <div class="col-md-3">
                                     <h5>訂單資訊</h5>
                                     <div class="mb-2 row">
@@ -324,6 +324,24 @@
                                         </div>
                                     </div>
                                     <div class="mb-2 row">
+                                        <label class="col-sm-4 col-form-label">已騎乘公里數</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control form-control-sm" id="riddenMileage" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="mb-2 row">
+                                        <label class="col-sm-4 col-form-label">預估超時費</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control form-control-sm" id="estimateTotalExceedTimeFee" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="mb-2 row">
+                                        <label class="col-sm-4 col-form-label">預估超里費</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control form-control-sm" id="estimateTotalExceedMileageFee" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="mb-2 row">
                                         <label class="col-sm-4 col-form-label">訂單狀態</label>
                                         <div class="col-sm-8">
                                             <input type="text" class="form-control form-control-sm" id="orderStatus" disabled>
@@ -353,6 +371,9 @@
 
                             <a class="nav-link" id="tab-4" data-bs-toggle="tab" href="#table-4" role="tab"
                             aria-controls="table-4" aria-selected="false">還車照片</a>
+
+                            <a class="nav-link" id="tab-4" data-bs-toggle="tab" href="#table-5" role="tab"
+                            aria-controls="table-5" aria-selected="false">更換車輛原因</a>
                         </div>
                     </nav>
 
@@ -428,6 +449,27 @@
                                             <!-- 照片格子會由 JavaScript 動態產生 -->
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 在 tab-5 內加入 -->
+                        <div class="tab-pane fade" id="table-5" role="tabpanel" aria-labelledby="tab-5">
+                            <div class="tableList">
+                                <div class="table-responsive">
+                                    <h4 class="mt-5">更換車輛原因</h4>
+                                    <table id= "reasonList" class="display table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>車輛編號</th>
+                                                <th>更換車輛原因</th>
+                                                <th>備註</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- 這裡將通過 JavaScript 動態填充訂單明細 -->
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
